@@ -14,7 +14,7 @@ class Product extends Model
     protected $casts = [
         'detail' => 'json',
     ];
-
+    
     public function productAttributes(): HasMany
     {
         return $this->hasMany(ProductAttribute::class);
@@ -41,5 +41,27 @@ class Product extends Model
 
     public function getTopSellers(int $limit) {
         return $this->with('images')->orderBy('sales', 'desc')->limit($limit)->get();
+    }
+
+    public function indexToElasticsearch()
+    {
+        // 获取所有商品及其相关的属性
+        $products = $this->with('productAttributes')->with('categories')->with('images')->with('reviews')->get();
+        
+        // 连接 Elasticsearch
+        $elasticsearch = app('elasticsearch');
+        
+        // 遍历每个商品，构建文档并索引到 Elasticsearch
+        foreach ($products as $product) {
+            $document = $product->toArray();
+
+            // 将商品文档索引到 Elasticsearch
+            $elasticsearch->index([
+                'index' => 'products',
+                'type' => '_doc',
+                'id' => $product->id,
+                'body' => $document,
+            ]);
+        }
     }
 }

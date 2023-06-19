@@ -29,5 +29,12 @@ use App\Http\Controllers\IndexController;
 
 Route::get('/', [IndexController::class, 'index']);
 
+Route::get('review/gallery', 'App\Http\Controllers\AjaxController@reviewGallery')->name('review.gallery');
+
+
+
+
+
 Route::any('{any}', 'App\Http\Controllers\CategoryController@index')->where('any', '.*');
+
 

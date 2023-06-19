@@ -4,13 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Product;
+
 class CategoryController extends Controller
 {
     protected $category;
 
-    public function __construct(Category $category)
+    protected $product;
+
+    public function __construct(Category $category,Product $product)
     {
         $this->category = $category;
+        $this->product = $product;
     }
 
     public function index(Request $request)
@@ -39,6 +44,7 @@ class CategoryController extends Controller
 
     public function show($categoryID)
     {
-        dd($categoryID);
+        $this->product->indexToElasticsearch();
+        return view('pc.category');
     }
 }
