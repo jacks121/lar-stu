@@ -50,13 +50,27 @@ class CategoryController extends Controller
             'perPage' => 'integer|min:1|max:100',
             'sortField' => 'string|nullable',
             'sortOrder' => 'in:asc,desc|nullable',
-            'priceMin' => 'integer|min:0',
-            'priceMax' => 'integer|min:0',
+            'price' => 'string|nullable',
             'details' => 'array',
         ]);
 
+        // 拆分价格范围
+        $priceRange = [];
+        if ($validated['price']) {
+            $priceRange = explode('-', $validated['price']);
+        }
+
         // 构建搜索参数
-        $params = array_merge(['category_id' => $categoryID], $validated);
+        $params = [
+            'category_id' => $categoryID,
+            'page' => $validated['page'] ?? 1,
+            'perPage' => $validated['perPage'] ?? 10,
+            'sortField' => $validated['sortField'],
+            'sortOrder' => $validated['sortOrder'],
+            'priceMin' => $priceRange[0] ?? null,
+            'priceMax' => $priceRange[1] ?? null,
+            'details' => $validated['details'],
+        ];
 
         // 调用搜索方法获取商品列表
         $result = $this->product->searchProducts($params);

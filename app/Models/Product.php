@@ -211,7 +211,9 @@ class Product extends Model
                     },
                 ]);
             },
-            'images',
+            'images' => function ($query) {
+                $query->select('id', 'image_url', 'imageable_id');
+            },
         ])->get();
 
         // 遍历每个商品，构建文档并索引到 Elasticsearch
