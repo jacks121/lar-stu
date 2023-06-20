@@ -110,7 +110,7 @@ class Product extends Model
                 ],
             ];
         }
-
+        
         // 添加分类筛选条件
         if ($categoryID) {
             $query['query']['bool']['filter'] = [
@@ -167,6 +167,28 @@ class Product extends Model
         // 连接 Elasticsearch
         $elasticsearch = app('elasticsearch');
 
+        $params = [
+            'name' => 'products_template',
+            'body' => [
+                'index_patterns' => ['products'], 
+                'mappings' => [
+                    'properties' => [
+                        'current_price' => [
+                            'type' => 'float',
+                            'fields' => [
+                                'keyword' => [
+                                    'type' => 'keyword',
+                                    'ignore_above' => 256
+                                ]
+                            ]
+                        ],
+                    ]
+                ]
+            ]
+        ];
+        
+        $elasticsearch->indices()->putTemplate($params);
+        
         // 首先检查索引是否存在
         $indexParams = ['index' => 'products'];
         $indexExists = $elasticsearch->indices()->exists($indexParams);

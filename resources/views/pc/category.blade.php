@@ -524,20 +524,18 @@
     }
 </script>
 
-                    <div class="toolbar toolbar-products flex justify-between items-center py-4 border-t border-b  border-gray-200"
-                        data-mage-init='{"productListToolbarForm":{"mode":"product_list_mode","direction":"product_list_dir","order":"product_list_order","limit":"product_list_limit","modeDefault":"grid","directionDefault":"asc","orderDefault":"position","limitDefault":"24","url":"https:\/\/www.stunring.com\/wedding\/engagement-rings.html","formKey":"NfnsJIDLnP85ActT","post":false}}'>
+                    <div
+                        class="toolbar toolbar-products flex justify-between items-center py-4 border-t border-b  border-gray-200">
 
                         <div class="toolbar-sorter-container">
                             <div class="toolbar-sorter sorter font-sans text-sm">
                                 <span class="sorter-label">Sort By</span>
-                                <a data-role="sorter" class="item px-2 " href="javascript:void(0)"
-                                    data-value="price_asc">Price Low to High</a>
-                                <a data-role="sorter" class="item px-2 " href="javascript:void(0)"
-                                    data-value="price_desc">Price High to Low</a>
-                                <a data-role="sorter" class="item px-2 selected" href="javascript:void(0)"
-                                    data-value="position">Recommend</a>
-                                <a data-role="sorter" class="item px-2 " href="javascript:void(0)"
-                                    data-value="newest">Newest</a>
+                                <a class="item px-2 " href="javascript:void(0)" sortField="current_price" sortOrder="asc">Price
+                                    Low to High</a>
+                                <a class="item px-2 " href="javascript:void(0)" sortField="current_price" sortOrder="desc">Price
+                                    High to Low</a>
+                                <a class="item px-2 " href="javascript:void(0)" sortField="created_at"
+                                    sortOrder="desc">Newest</a>
                             </div>
                         </div>
 
@@ -547,7 +545,7 @@
                                     <span>Show</span>
                                 </label>
                                 <div class="control">
-                                    <select id="limiter" data-role="limiter" class="limiter-options">
+                                    <select id="limiter" class="limiter-options">
                                         <option value="24" selected="selected">
                                             24 </option>
                                         <option value="36">
@@ -571,54 +569,62 @@
                             <div class="pages">
                                 <strong class="label pages-label" id="paging-label">Page</strong>
                                 <ul class="items pages-items" aria-labelledby="paging-label">
+                                    @php
+                                        $currentPage = $currentPage ?? 1;
+                                        $totalPages = $totalPages ?? 1;
+                                        $queryParams = request()->query();
+                                        $startPage = max(1, $currentPage - 2);
+                                        $endPage = min($startPage + 4, $totalPages);
+                                        $startPage = max(1, $endPage - 4);
+                                    @endphp
 
+                                    @if ($currentPage > 1)
+                                        @php
+                                            $queryParams['page'] = $currentPage - 1;
+                                            $queryString = http_build_query($queryParams);
+                                        @endphp
+                                        <li class="item item pages-item-previous">
+                                            <a class="action  previous" href="?{{ $queryString }}" title="Prev">
+                                                <span class="label">Page</span>
+                                                <span>Prev</span>
+                                            </a>
+                                        </li>
+                                    @endif
 
+                                    @for ($i = $startPage; $i <= $endPage; $i++)
+                                        @php
+                                            $queryParams['page'] = $i;
+                                            $queryString = http_build_query($queryParams);
+                                        @endphp
+                                        @if ($i == $currentPage)
+                                            <li class="item current">
+                                                <strong class="page">
+                                                    <span class="label">Page</span>
+                                                    <span>{{ $i }}</span>
+                                                </strong>
+                                            </li>
+                                        @else
+                                            <li class="item">
+                                                <a href="?{{ $queryString }}" class="page">
+                                                    <span class="label">Page</span>
+                                                    <span>{{ $i }}</span>
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endfor
 
-                                    <li class="item current">
-                                        <strong class="page">
-                                            <span class="label">You&#039;re currently reading page</span>
-                                            <span>1</span>
-                                        </strong>
-                                    </li>
-                                    <li class="item">
-                                        <a href="https://www.stunring.com/wedding/engagement-rings.html?p=2"
-                                            class="page">
-                                            <span class="label">Page</span>
-                                            <span>2</span>
-                                        </a>
-                                    </li>
-                                    <li class="item">
-                                        <a href="https://www.stunring.com/wedding/engagement-rings.html?p=3"
-                                            class="page">
-                                            <span class="label">Page</span>
-                                            <span>3</span>
-                                        </a>
-                                    </li>
-                                    <li class="item">
-                                        <a href="https://www.stunring.com/wedding/engagement-rings.html?p=4"
-                                            class="page">
-                                            <span class="label">Page</span>
-                                            <span>4</span>
-                                        </a>
-                                    </li>
-                                    <li class="item">
-                                        <a href="https://www.stunring.com/wedding/engagement-rings.html?p=5"
-                                            class="page">
-                                            <span class="label">Page</span>
-                                            <span>5</span>
-                                        </a>
-                                    </li>
-
-
-
-                                    <li class="item pages-item-next">
-                                        <a class="action  next"
-                                            href="https://www.stunring.com/wedding/engagement-rings.html?p=2"
-                                            title="Next">
-                                            <span class="label">Page</span>
-                                            <span>Next</span>
-                                        </a>
-                                    </li>
+                                    @if ($currentPage < $totalPages)
+                                        @php
+                                            $queryParams['page'] = $currentPage + 1;
+                                            $queryString = http_build_query($queryParams);
+                                        @endphp
+                                        <li class="item pages-item-next">
+                                            <a class="action next" href="?{{ $queryString }}" title="Next">
+                                                <span class="label">Page</span>
+                                                <span>Next</span>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
 
@@ -700,20 +706,18 @@
                         </ol>
                     </div>
 
-                    <div class="toolbar toolbar-products flex justify-between items-center py-4 border-t border-b  border-gray-200"
-                        data-mage-init='{"productListToolbarForm":{"mode":"product_list_mode","direction":"product_list_dir","order":"product_list_order","limit":"product_list_limit","modeDefault":"grid","directionDefault":"asc","orderDefault":"position","limitDefault":"24","url":"https:\/\/www.stunring.com\/wedding\/engagement-rings.html","formKey":"NfnsJIDLnP85ActT","post":false}}'>
+                    <div
+                        class="toolbar toolbar-products flex justify-between items-center py-4 border-t border-b  border-gray-200">
 
                         <div class="toolbar-sorter-container">
                             <div class="toolbar-sorter sorter font-sans text-sm">
                                 <span class="sorter-label">Sort By</span>
-                                <a data-role="sorter" class="item px-2 " href="javascript:void(0)"
-                                    data-value="price_asc">Price Low to High</a>
-                                <a data-role="sorter" class="item px-2 " href="javascript:void(0)"
-                                    data-value="price_desc">Price High to Low</a>
-                                <a data-role="sorter" class="item px-2 selected" href="javascript:void(0)"
-                                    data-value="position">Recommend</a>
-                                <a data-role="sorter" class="item px-2 " href="javascript:void(0)"
-                                    data-value="newest">Newest</a>
+                                <a class="item px-2 " href="javascript:void(0)" sortField="current_price"
+                                    sortOrder="asc">Price Low to High</a>
+                                <a class="item px-2 " href="javascript:void(0)" sortField="current_price"
+                                    sortOrder="desc">Price High to Low</a>
+                                <a class="item px-2 " href="javascript:void(0)" sortField="created_at"
+                                    sortOrder="desc">Newest</a>
                             </div>
                         </div>
 
@@ -723,7 +727,7 @@
                                     <span>Show</span>
                                 </label>
                                 <div class="control">
-                                    <select id="limiter" data-role="limiter" class="limiter-options">
+                                    <select id="limiter" class="limiter-options">
                                         <option value="24" selected="selected">
                                             24 </option>
                                         <option value="36">
@@ -747,55 +751,64 @@
                             <div class="pages">
                                 <strong class="label pages-label" id="paging-label">Page</strong>
                                 <ul class="items pages-items" aria-labelledby="paging-label">
+                                    @php
+                                        $currentPage = $currentPage ?? 1;
+                                        $totalPages = $totalPages ?? 1;
+                                        $queryParams = request()->query();
+                                        $startPage = max(1, $currentPage - 2);
+                                        $endPage = min($startPage + 4, $totalPages);
+                                        $startPage = max(1, $endPage - 4);
+                                    @endphp
 
+                                    @if ($currentPage > 1)
+                                        @php
+                                            $queryParams['page'] = $currentPage - 1;
+                                            $queryString = http_build_query($queryParams);
+                                        @endphp
+                                        <li class="item item pages-item-previous">
+                                            <a class="action  previous" href="?{{ $queryString }}" title="Prev">
+                                                <span class="label">Page</span>
+                                                <span>Prev</span>
+                                            </a>
+                                        </li>
+                                    @endif
 
+                                    @for ($i = $startPage; $i <= $endPage; $i++)
+                                        @php
+                                            $queryParams['page'] = $i;
+                                            $queryString = http_build_query($queryParams);
+                                        @endphp
+                                        @if ($i == $currentPage)
+                                            <li class="item current">
+                                                <strong class="page">
+                                                    <span class="label">Page</span>
+                                                    <span>{{ $i }}</span>
+                                                </strong>
+                                            </li>
+                                        @else
+                                            <li class="item">
+                                                <a href="?{{ $queryString }}" class="page">
+                                                    <span class="label">Page</span>
+                                                    <span>{{ $i }}</span>
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endfor
 
-                                    <li class="item current">
-                                        <strong class="page">
-                                            <span class="label">You&#039;re currently reading page</span>
-                                            <span>1</span>
-                                        </strong>
-                                    </li>
-                                    <li class="item">
-                                        <a href="https://www.stunring.com/wedding/engagement-rings.html?p=2"
-                                            class="page">
-                                            <span class="label">Page</span>
-                                            <span>2</span>
-                                        </a>
-                                    </li>
-                                    <li class="item">
-                                        <a href="https://www.stunring.com/wedding/engagement-rings.html?p=3"
-                                            class="page">
-                                            <span class="label">Page</span>
-                                            <span>3</span>
-                                        </a>
-                                    </li>
-                                    <li class="item">
-                                        <a href="https://www.stunring.com/wedding/engagement-rings.html?p=4"
-                                            class="page">
-                                            <span class="label">Page</span>
-                                            <span>4</span>
-                                        </a>
-                                    </li>
-                                    <li class="item">
-                                        <a href="https://www.stunring.com/wedding/engagement-rings.html?p=5"
-                                            class="page">
-                                            <span class="label">Page</span>
-                                            <span>5</span>
-                                        </a>
-                                    </li>
-
-
-
-                                    <li class="item pages-item-next">
-                                        <a class="action  next"
-                                            href="https://www.stunring.com/wedding/engagement-rings.html?p=2"
-                                            title="Next">
-                                            <span class="label">Page</span>
-                                            <span>Next</span>
-                                        </a>
-                                    </li>
+                                    @if ($currentPage < $totalPages)
+                                        @php
+                                            $queryParams['page'] = $currentPage + 1;
+                                            $queryString = http_build_query($queryParams);
+                                        @endphp
+                                        <li class="item pages-item-next">
+                                            <a class="action next" href="?{{ $queryString }}" title="Next">
+                                                <span class="label">Page</span>
+                                                <span>Next</span>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
+
                             </div>
 
 
@@ -830,6 +843,49 @@
                                     )
                                 }
                             })
+                            $(document).ready(function() {
+                                $('.limiter-options').change(function() {
+                                    var perPage = $(this).val();
+                                    var currentUrl = window.location.href;
+                                    var updatedUrl = updateQueryParam(currentUrl, 'perPage', perPage);
+                                    window.location.href = updatedUrl;
+                                });
+
+                                // Get the current value of perPage from the URL query parameter
+                                var urlParams = new URLSearchParams(window.location.search);
+                                var perPageParam = urlParams.get('perPage');
+                                if (perPageParam) {
+                                    // Set the selected option based on the perPageParam value
+                                    $('.limiter-options').val(perPageParam);
+                                }
+
+                                $('.toolbar-sorter a').click(function(e) {
+                                    e.preventDefault();
+                                    var sortField = $(this).attr('sortField');
+                                    var sortOrder = $(this).attr('sortOrder');
+                                    var currentUrl = window.location.href;
+                                    var updatedUrl = updateSortQueryParams(currentUrl, sortField, sortOrder);
+                                    window.location.href = updatedUrl;
+                                });
+                            });
+
+                            function updateQueryParam(url, key, value) {
+                                var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+                                var separator = url.indexOf('?') !== -1 ? "&" : "?";
+                                if (url.match(re)) {
+                                    return url.replace(re, '$1' + key + "=" + value + '$2');
+                                } else {
+                                    return url + separator + key + "=" + value;
+                                }
+                            }
+
+                            function updateSortQueryParams(url, sortField, sortOrder) {
+                                var urlParams = new URLSearchParams(window.location.search);
+                                urlParams.set('sortField', sortField);
+                                urlParams.set('sortOrder', sortOrder);
+                                var updatedUrl = url.split('?')[0] + '?' + urlParams.toString();
+                                return updatedUrl;
+                            }
                         })
                     </script>
                     <script type="text/x-magento-init">
