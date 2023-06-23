@@ -530,9 +530,11 @@
                         <div class="toolbar-sorter-container">
                             <div class="toolbar-sorter sorter font-sans text-sm">
                                 <span class="sorter-label">Sort By</span>
-                                <a class="item px-2 " href="javascript:void(0)" sortField="current_price" sortOrder="asc">Price
+                                <a class="item px-2 " href="javascript:void(0)" sortField="current_price"
+                                    sortOrder="asc">Price
                                     Low to High</a>
-                                <a class="item px-2 " href="javascript:void(0)" sortField="current_price" sortOrder="desc">Price
+                                <a class="item px-2 " href="javascript:void(0)" sortField="current_price"
+                                    sortOrder="desc">Price
                                     High to Low</a>
                                 <a class="item px-2 " href="javascript:void(0)" sortField="created_at"
                                     sortOrder="desc">Newest</a>
@@ -909,7 +911,57 @@
                             <strong data-role="title">Shop By</strong>
                         </div>
                         <div class="block-content filter-content">
+                            @php
+                                $request = array_merge(request()->query()['details'] ?? [], isset(request()->query()['price']) ? ['price' => request()->query()['price']] : []);
+                            @endphp
+                            @if (!empty($request))
+                                <div class="filter-current">
+                                    <strong class="block-subtitle filter-current-subtitle" role="heading"
+                                        aria-level="2" data-count="{{ count(request()->query()) }}">Now Shopping
+                                        by</strong>
+                                    <ol class="items">
+                                        @foreach ($request as $key => $value)
+                                            @php
+                                                $urlParams = request()->query();
+                                                $values = explode(',', $value);
+                                            @endphp
 
+                                            @foreach ($values as $val)
+                                                @php
+                                                    $urlParams = request()->query(); // Reset URL params
+                                                    if (isset($urlParams['details']) && is_array($urlParams['details']) && array_key_exists($key, $urlParams['details'])) {
+                                                        $tempValues = explode(',', $urlParams['details'][$key]);
+                                                        if (($keyIndex = array_search($val, $tempValues)) !== false) {
+                                                            unset($tempValues[$keyIndex]);
+                                                        }
+                                                        if (empty($tempValues)) {
+                                                            unset($urlParams['details'][$key]);
+                                                        } else {
+                                                            $urlParams['details'][$key] = implode(',', $tempValues);
+                                                        }
+                                                    } else {
+                                                        unset($urlParams[$key]);
+                                                    }
+                                                    $url = request()->path() . '?' . http_build_query($urlParams);
+                                                @endphp
+                                                <li class="item">
+                                                    <span
+                                                        class="filter-label">{{ ucfirst(str_replace('_', ' ', $key)) }}</span>
+                                                    <span class="filter-value">{{ $val }}</span>
+                                                    <a class="action remove" href="{{ $url }}"
+                                                        title="Remove {{ ucfirst(str_replace('_', ' ', $key)) }} {{ $val }}">
+                                                        <span>Remove This Item</span>
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        @endforeach
+                                    </ol>
+                                </div>
+                                <div class="block-actions filter-actions">
+                                    <a href="{{ request()->path() }}" class="action clear filter-clear"><span>Clear
+                                            All</span></a>
+                                </div>
+                            @endif
 
                             <strong role="heading" aria-level="2"
                                 class="block-subtitle filter-subtitle uppercase text-gray-700">Shopping
@@ -927,770 +979,158 @@
                                 <div data-role="collapsible" class="filter-options-item" attribute="price">
                                     <div data-role="title"
                                         class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
-                                        Price</div>
+                                        Price
+                                    </div>
 
                                     <div data-role="content" class="filter-options-content py-2">
                                         <ol class="items">
-                                            <li class="item py-1">
-                                                <input type="radio"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?price=50-100'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?price=50-100">
-                                                    <span class="price">$50.00</span> - <span
-                                                        class="price">$100.00</span> <span class="count">1<span
-                                                            class="filter-count-label">item</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="radio"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?price=100-150'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?price=100-150">
-                                                    <span class="price">$100.00</span> - <span
-                                                        class="price">$150.00</span> <span class="count">448<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="radio"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?price=150-0'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?price=150-0">
-                                                    <span class="price">$150.00</span> and above <span
-                                                        class="count">60<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
+                                            @foreach ($filterList['price'] as $index => $item)
+                                                @php
+                                                    $nextItem = current(array_slice($filterList['price'], $index + 1, 1));
+                                                    if(count($filterList['price']) < 2){
+                                                        break;
+                                                    }
+                                                    $urlParams = array_merge(request()->query(), ['price' => $item['key'] . ($nextItem ? '-' . $nextItem['key'] : '-999999')]);
+                                                    $url = request()->path() . '?' . http_build_query($urlParams);
+                                                    $isChecked = request()->input('price') == $item['key'] . ($nextItem ? '-' . $nextItem['key'] : '-999999');
+                                                @endphp
+                                                <li class="item py-1">
+                                                    <input type="radio"
+                                                        onchange="window.location.href='{{ $url }}'"
+                                                        {{ $isChecked ? 'checked="checked"' : '' }} />
+                                                    <a href="{{ $url }}">
+                                                        @if ($index == 0)
+                                                            <span class="price">Below ${{ $nextItem['key'] }}</span>
+                                                        @elseif ($index == count($filterList['price']) - 1)
+                                                            <span class="price">${{ $item['key'] }} and above</span>
+                                                        @else
+                                                            <span
+                                                                class="price">{{ $filterList['price'][$index - 1]['key'] }}</span>
+                                                            -
+                                                            <span class="price">${{ $item['key'] }}</span>
+                                                        @endif
+                                                        <span class="count">{{ $item['doc_count'] }}
+                                                            <span class="filter-count-label">
+                                                                {{ $item['doc_count'] > 1 ? 'items' : 'item' }}
+                                                            </span>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                            @endforeach
                                         </ol>
                                     </div>
                                 </div>
-                                <div data-role="collapsible" class="filter-options-item" attribute="stone_cut">
+                                @php
+                                    $filterListNew = collect($filterList)
+                                        ->except(['price', 'carat ranges'])
+                                        ->toArray();
+                                @endphp
+                                @foreach ($filterListNew as $attribute => $items)
+                                    <div data-role="collapsible" class="filter-options-item"
+                                        attribute="{{ str_replace(' ', '_', $attribute) }}">
+                                        <div data-role="title"
+                                            class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
+                                            {{ ucwords($attribute) }}
+                                        </div>
+                                        <div data-role="content" class="filter-options-content py-2">
+                                            <ol class="items">
+                                                @foreach ($items as $item)
+                                                    @php
+                                                        $newQueryParams = request()->query();
+                                                        $detail = isset($newQueryParams['details']) ? $newQueryParams['details'] : [];
+                                                        $attributeKey = str_replace(' ', '_', $attribute);
+                                                        $existingValues = isset($detail[$attributeKey]) ? explode(',', $detail[$attributeKey]) : [];
+                                                        $isChecked = in_array($item['key'], $existingValues);
+                                                        
+                                                        if ($isChecked) {
+                                                            $valueIndex = array_search($item['key'], $existingValues);
+                                                            unset($existingValues[$valueIndex]);
+                                                        } else {
+                                                            $existingValues[] = $item['key'];
+                                                        }
+                                                        
+                                                        if (!empty($existingValues)) {
+                                                            $detail[$attributeKey] = implode(',', $existingValues);
+                                                        } else {
+                                                            unset($detail[$attributeKey]);
+                                                        }
+                                                        
+                                                        $newQueryParams['details'] = $detail;
+                                                        $url = request()->path() . '?' . http_build_query($newQueryParams);
+                                                    @endphp
+                                                    <li class="item py-1">
+                                                        <input type="checkbox"
+                                                            onchange="window.location.href='{{ $url }}'"
+                                                            @if ($isChecked) checked="checked" @endif />
+                                                        <a href="{{ $url }}">
+                                                            {{ $item['key'] }} <span
+                                                                class="count">{{ $item['doc_count'] }}<span
+                                                                    class="filter-count-label">items</span></span>
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ol>
+                                        </div>
+                                    </div>
+                                @endforeach
+                                <div data-role="collapsible" class="filter-options-item @if (!empty($existingKeys)) expanded @else collapsed @endif" attribute="carat ranges">
                                     <div data-role="title"
                                         class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
-                                        Stone Cut</div>
-
+                                        Carat Ranges
+                                    </div>
                                     <div data-role="content" class="filter-options-content py-2">
                                         <ol class="items">
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=83'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=83">
-                                                    Round <span class="count">85<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=79'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=79">
-                                                    Oval <span class="count">67<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=75'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=75">
-                                                    Cushion <span class="count">60<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=76'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=76">
-                                                    Emerald <span class="count">47<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=80'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=80">
-                                                    Pear <span class="count">53<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=77'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=77">
-                                                    Heart <span class="count">15<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=82'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=82">
-                                                    Radiant <span class="count">47<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=73'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=73">
-                                                    Asscher <span class="count">10<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=74'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=74">
-                                                    Baguette <span class="count">3<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=146'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=146">
-                                                    Triangle <span class="count">1<span
-                                                            class="filter-count-label">item</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=78'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=78">
-                                                    Marquise <span class="count">25<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_cut=81'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_cut=81">
-                                                    Princess <span class="count">20<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
+                                            @foreach ($filterList['carat ranges'] as $index => $item)
+                                                @php
+                                                    if(count($filterList['carat ranges']) < 2){
+                                                        break;
+                                                    }
+                                                    $nextItem = current(array_slice($filterList['carat ranges'], $index + 1, 1));
+                                                    $newItemKey = $item['key'] . ($nextItem ? '-' . $nextItem['key'] : '-999');
+                                                    $urlParams = request()->query();
+                                                    $existingKeys = isset($urlParams['details']['carat_ranges']) ? explode(',', $urlParams['details']['carat_ranges']) : [];
+                                                    $isChecked = in_array($newItemKey, $existingKeys);
+                                                    
+                                                    if ($isChecked) {
+                                                        $keyIndex = array_search($newItemKey, $existingKeys);
+                                                        unset($existingKeys[$keyIndex]);
+                                                    } else {
+                                                        $existingKeys[] = $newItemKey;
+                                                    }
+                                                    
+                                                    if (!empty($existingKeys)) {
+                                                        $urlParams['details']['carat_ranges'] = implode(',', $existingKeys);
+                                                    } else {
+                                                        unset($urlParams['details']['carat_ranges']);
+                                                    }
+                                                    
+                                                    $url = request()->path() . '?' . http_build_query($urlParams);
+                                                @endphp
+                                                <li class="item py-1">
+                                                    <input type="checkbox"
+                                                        onchange="window.location.href='{{ $url }}'"
+                                                        @if ($isChecked) checked="checked" @endif />
+                                                    <a href="{{ $url }}">
+                                                        @if ($index == 0)
+                                                            <span class="price">Below {{ $nextItem['key'] }}
+                                                                carat</span>
+                                                        @elseif ($index == count($filterList['carat ranges']) - 1)
+                                                            <span class="price">{{ $item['key'] }} carat and
+                                                                above</span>
+                                                        @else
+                                                            <span
+                                                                class="price">{{ $filterList['carat ranges'][$index - 1]['key'] }}
+                                                                - {{ $item['key'] }} carat</span>
+                                                        @endif
+                                                        <span class="count">{{ $item['doc_count'] }} <span
+                                                                class="filter-count-label">{{ $item['doc_count'] > 1 ? 'items' : 'item' }}</span></span>
+                                                    </a>
+                                                </li>
+                                            @endforeach
                                         </ol>
                                     </div>
                                 </div>
-                                <div data-role="collapsible" class="filter-options-item" attribute="stone_color">
-                                    <div data-role="title"
-                                        class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
-                                        Stone Color</div>
 
-                                    <div data-role="content" class="filter-options-content py-2">
-                                        <ol class="items">
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=84'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=84">
-                                                    White <span class="count">334<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=92'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=92">
-                                                    Ruby Red <span class="count">44<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=94'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=94">
-                                                    Aquamarine Blue <span class="count">14<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=85'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=85">
-                                                    Sapphire Blue <span class="count">37<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=153'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=153">
-                                                    Blue Topaz <span class="count">4<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=90'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=90">
-                                                    Emerald Green <span class="count">28<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=152'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=152">
-                                                    Peridot Green <span class="count">8<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=86'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=86">
-                                                    Fancy Pink <span class="count">53<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=89'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=89">
-                                                    Yellow <span class="count">22<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=88'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=88">
-                                                    Champagne&Morganite <span class="count">2<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=93'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=93">
-                                                    Black <span class="count">4<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=149'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=149">
-                                                    Orange <span class="count">2<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=87'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=87">
-                                                    Amethyst Purple <span class="count">8<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=95'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=95">
-                                                    Chocolate <span class="count">2<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=150'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=150">
-                                                    Watermelon <span class="count">6<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?stone_color=91'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?stone_color=91">
-                                                    Pearl <span class="count">7<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                        </ol>
-                                    </div>
-                                </div>
-                                <div data-role="collapsible" class="filter-options-item" attribute="carat_range">
-                                    <div data-role="title"
-                                        class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
-                                        Carat Range</div>
-
-                                    <div data-role="content" class="filter-options-content py-2">
-                                        <ol class="items">
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?carat_range=96'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?carat_range=96">
-                                                    Under 1.00 carat <span class="count">32<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?carat_range=97'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?carat_range=97">
-                                                    1.00-1.50 carats <span class="count">67<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?carat_range=98'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?carat_range=98">
-                                                    1.50-2.00 carats <span class="count">91<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?carat_range=99'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?carat_range=99">
-                                                    2.00-3.00 carats <span class="count">139<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?carat_range=100'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?carat_range=100">
-                                                    3.00-4.00 carats <span class="count">123<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?carat_range=101'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?carat_range=101">
-                                                    4.00 carats above <span class="count">117<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                        </ol>
-                                    </div>
-                                </div>
-                                <div data-role="collapsible" class="filter-options-item" attribute="plating_color">
-                                    <div data-role="title"
-                                        class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
-                                        Plating Color</div>
-
-                                    <div data-role="content" class="filter-options-content py-2">
-                                        <ol class="items">
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?plating_color=104'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?plating_color=104">
-                                                    Platinum <span class="count">317<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?plating_color=106'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?plating_color=106">
-                                                    Yellow Gold <span class="count">123<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?plating_color=103'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?plating_color=103">
-                                                    Rose Gold <span class="count">54<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?plating_color=102'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?plating_color=102">
-                                                    Black <span class="count">2<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?plating_color=105'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?plating_color=105">
-                                                    Two Tone <span class="count">41<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                        </ol>
-                                    </div>
-                                </div>
-                                <div data-role="collapsible" class="filter-options-item" attribute="style">
-                                    <div data-role="title"
-                                        class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
-                                        Style</div>
-
-                                    <div data-role="content" class="filter-options-content py-2">
-                                        <ol class="items">
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=117'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=117">
-                                                    Classic <span class="count">218<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=115'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=115">
-                                                    Vintage <span class="count">145<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=119'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=119">
-                                                    Cocktail Rings <span class="count">123<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=114'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=114">
-                                                    Anniversary <span class="count">193<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=122'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=122">
-                                                    Art Deco <span class="count">75<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=121'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=121">
-                                                    Heart <span class="count">15<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=123'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=123">
-                                                    Knot/Bowknot/Rope <span class="count">6<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=113'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=113">
-                                                    Solitaire <span class="count">102<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=107'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=107">
-                                                    Eternity <span class="count">18<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=108'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=108">
-                                                    Half Eternity <span class="count">97<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=111'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=111">
-                                                    Halo <span class="count">137<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=112'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=112">
-                                                    Three stone <span class="count">59<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=109'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=109">
-                                                    Multi Row <span class="count">6<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=116'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=116">
-                                                    Split shank <span class="count">33<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=118'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=118">
-                                                    Promise Rings <span class="count">140<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=120'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=120">
-                                                    Trio Wedding Sets <span class="count">2<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=124'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=124">
-                                                    Skull <span class="count">1<span
-                                                            class="filter-count-label">item</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=125'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=125">
-                                                    Animal <span class="count">7<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?style=126'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?style=126">
-                                                    Nature <span class="count">20<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                        </ol>
-                                    </div>
-                                </div>
-                                <div data-role="collapsible" class="filter-options-item" attribute="occasion">
-                                    <div data-role="title"
-                                        class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
-                                        Occasion</div>
-
-                                    <div data-role="content" class="filter-options-content py-2">
-                                        <ol class="items">
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?occasion=127'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?occasion=127">
-                                                    Valentine’s day <span class="count">382<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?occasion=128'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?occasion=128">
-                                                    Mother's day <span class="count">297<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?occasion=129'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?occasion=129">
-                                                    Father's day <span class="count">20<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?occasion=130'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?occasion=130">
-                                                    Birthday <span class="count">232<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?occasion=131'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?occasion=131">
-                                                    Thanksgiving day <span class="count">276<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?occasion=132'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?occasion=132">
-                                                    Merry christmas <span class="count">268<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?occasion=133'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?occasion=133">
-                                                    Halloween <span class="count">13<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?occasion=134'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?occasion=134">
-                                                    Graduation <span class="count">200<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                        </ol>
-                                    </div>
-                                </div>
-                                <div data-role="collapsible" class="filter-options-item" attribute="recipient">
-                                    <div data-role="title"
-                                        class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
-                                        Recipient</div>
-
-                                    <div data-role="content" class="filter-options-content py-2">
-                                        <ol class="items">
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?recipient=135'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?recipient=135">
-                                                    For Her <span class="count">422<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?recipient=136'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?recipient=136">
-                                                    For Him <span class="count">27<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?recipient=137'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?recipient=137">
-                                                    For Mom <span class="count">305<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?recipient=138'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?recipient=138">
-                                                    For Dad <span class="count">20<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?recipient=139'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?recipient=139">
-                                                    For Kids <span class="count">24<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?recipient=144'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?recipient=144">
-                                                    For Friends <span class="count">286<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                            <li class="item py-1">
-                                                <input type="checkbox"
-                                                    onchange="window.location.href='https://www.stunring.com/wedding/engagement-rings.html?recipient=145'" />
-                                                <a
-                                                    href="https://www.stunring.com/wedding/engagement-rings.html?recipient=145">
-                                                    For Couples <span class="count">4<span
-                                                            class="filter-count-label">items</span></span>
-                                                </a>
-                                            </li>
-                                        </ol>
-                                    </div>
-                                </div>
                             </div>
 
                         </div>
