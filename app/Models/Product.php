@@ -5,7 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Facades\Cache;
 
 class Product extends Model
 {
@@ -15,7 +17,7 @@ class Product extends Model
         'detail' => 'json',
     ];
 
-    public function extension()
+    public function extension(): HasOne
     {
         return $this->hasOne(ProductExtension::class, 'product_id');
     }
@@ -86,7 +88,7 @@ class Product extends Model
         $query = [
             'from' => $from,
             'size' => $perPage,
-            '_source' => ['id', 'product_name', 'original_price', 'current_price', 'reviews_count', 'rating_avg', 'images'],
+            '_source' => ['id', 'product_name', 'original_price', 'current_price', 'reviews_count', 'rating_avg', 'images', 'extension'],
             'query' => [
                 'bool' => [
                     'must' => [
@@ -253,5 +255,115 @@ class Product extends Model
                 ],
             ],
         ];
+    }
+
+    public function getProductData($id)
+    {
+        return Cache::remember('product_data_' . $id, rand(600, 720), function () use ($id) {
+            $client = app('elasticsearch');
+            $params = [
+                'index' => 'products',
+                'id' => $id,
+            ];
+            $response = $client->get($params);
+
+            if (isset($response['_source'])) {
+                return $response['_source'];
+            }
+
+            return null;
+        });
+    }
+
+    public function indexToElasticsearch()
+    {
+        // 连接 Elasticsearch
+        $elasticsearch = app('elasticsearch');
+
+        $params = [
+            'name' => 'products_template',
+            'body' => [
+                'index_patterns' => ['products'],
+                'mappings' => [
+                    'properties' => [
+                        'current_price' => [
+                            'type' => 'float',
+                            'fields' => [
+                                'keyword' => [
+                                    'type' => 'keyword',
+                                    'ignore_above' => 256,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $elasticsearch->indices()->putTemplate($params);
+
+        // 首先检查索引是否存在
+        $indexParams = ['index' => 'products'];
+        $indexExists = $elasticsearch->indices()->exists($indexParams);
+
+        // 如果索引已经存在，删除索引
+        if ($indexExists) {
+            $elasticsearch->indices()->delete($indexParams);
+        }
+
+        // 获取所有商品及其相关的属性
+        $products = $this->with([
+            'productAttributes' => function ($query) {
+                $query->with(['attribute', 'value']);
+            },
+            'categories',
+            'extension',
+            'reviews' => function ($query) {
+                $query->take(5)->with([
+                    'images' => function ($q) {
+                        $q->select('id', 'image_url', 'imageable_id');
+                    },
+                ]);
+            },
+            'images' => function ($query) {
+                $query->select('id', 'image_url', 'imageable_id');
+            },
+        ])->get();
+
+        // 遍历每个商品，构建文档并索引到 Elasticsearch
+        foreach ($products as $product) {
+            // 计算评价数量和平均评分
+            $reviews_count = $product->reviews->count();
+            $rating_avg = $product->reviews->avg('rating');
+
+            $document = $product->toArray();
+
+            // 添加到产品文档中
+            $document['reviews_count'] = $reviews_count;
+            $document['rating_avg'] = $rating_avg;
+
+            //处理reviews的images
+            if (array_key_exists('reviews', $document)) {
+                foreach ($document['reviews'] as &$review) {
+                    $review['images'] = array_column($review['images'], 'image_url');
+                }
+            }
+
+            //处理productAttributes，合并attribute和value
+            if (array_key_exists('product_attributes', $document) && is_array($document['product_attributes'])) {
+                foreach ($document['product_attributes'] as &$attr) {
+                    $attr['attribute'] = $attr['attribute']['attribute_name'];
+                    $attr['value'] = $attr['value']['value'];
+                }
+            }
+
+            // 将商品文档索引到 Elasticsearch
+            $elasticsearch->index([
+                'index' => 'products',
+                'type' => '_doc',
+                'id' => $product->id,
+                'body' => $document,
+            ]);
+        }
     }
 }

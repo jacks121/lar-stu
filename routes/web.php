@@ -13,27 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-use App\Models\Advertisement;
-
-Route::get('/advertisement/{code}', function ($code) {
-    $advertisement = new Advertisement();
-    $result = $advertisement->getAdvertisementByCode($code);
-    
-    // 处理获取到的结果
-    // ...
-
-    return response()->json($result);
-});
-
 use App\Http\Controllers\IndexController;
 
 Route::get('/', [IndexController::class, 'index']);
 
 Route::get('review/gallery', 'App\Http\Controllers\AjaxController@reviewGallery')->name('review.gallery');
 
-
-
-
+Route::get('product/{product_id}.html', 'App\Http\Controllers\ProductController@index')
+    ->where('product_id', '[a-z0-9]+'); // 产品ID，只包含小写字母和数字
 
 Route::any('{any}', 'App\Http\Controllers\CategoryController@index')->where('any', '.*');
 

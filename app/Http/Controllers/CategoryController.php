@@ -99,7 +99,6 @@ class CategoryController extends Controller
         // dd($params);
         // 调用搜索方法获取商品列表
         $result = $this->product->searchProducts($params);
-  
         // 将搜索结果绑定到模板
         return view('pc.category', [
             'products' => $result['products'],

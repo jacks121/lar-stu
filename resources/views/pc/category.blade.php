@@ -641,7 +641,10 @@
                             @foreach ($products as $product)
                                 <li class="item product product-item relative">
                                     <div class="product-item-info" data-container="product-grid">
-                                        <a href="https://www.stunring.com/{{ $product['product_name'] }}.html"
+                                        @php
+                                            $description = implode('-',$product['extension']);
+                                        @endphp
+                                        <a href="{{ url()->to('/') . '/product/' . $product['id'] }}.html"
                                             class="product photo product-item-photo" tabindex="-1">
 
                                             <span class="product-image-container" style="width:350px;">
