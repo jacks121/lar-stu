@@ -22,6 +22,8 @@ Route::get('review/gallery', 'App\Http\Controllers\AjaxController@reviewGallery'
 Route::get('product/{product_id}.html', 'App\Http\Controllers\ProductController@index')
     ->where('product_id', '[a-z0-9]+'); // 产品ID，只包含小写字母和数字
 
+Route::post('add_to_cart', 'App\Http\Controllers\ProductController@addToCart');
+
 Route::any('{any}', 'App\Http\Controllers\CategoryController@index')->where('any', '.*');
 
 

@@ -184,7 +184,7 @@ class Product extends Model
                 $filterList[$key][] = $bucket;
             }
         }
-
+     
         // 排序筛选列表
         $order = ['price', 'stone cut', 'stone color', 'carat ranges', 'plating color', 'style', 'occasion', 'recipient'];
         uksort($filterList, function ($a, $b) use ($order) {
@@ -197,6 +197,7 @@ class Product extends Model
 
             return $orderA <=> $orderB;
         });
+        
 
         // 返回结果
         return [
@@ -299,13 +300,13 @@ class Product extends Model
                 ],
             ],
         ];
-
+      
         $elasticsearch->indices()->putTemplate($params);
 
         // 首先检查索引是否存在
         $indexParams = ['index' => 'products'];
         $indexExists = $elasticsearch->indices()->exists($indexParams);
-
+   
         // 如果索引已经存在，删除索引
         if ($indexExists) {
             $elasticsearch->indices()->delete($indexParams);

@@ -43,7 +43,7 @@ class CategoryController extends Controller
 
     public function show($categoryID, Request $request)
     {
-        // $this->product->indexToElasticsearch();
+        // $this->product->indexToElasticsearch();die;
         // 验证请求参数
         $validated = $request->validate([
             'page' => 'integer|min:1',

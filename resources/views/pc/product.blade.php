@@ -380,72 +380,70 @@
         });
     </script>
     <script type="text/x-magento-init">
-    {
-        ".action.search": {
-            "Gtag": {
-                "on": "click",
-                "event_action": "Submit Search",
-                "event_category": "Search"
-            }
-        },
-        "#scrollToTopButton": {
-            "Gtag": {
-                "on": "click",
-                "event_action": "Go to top",
-                "event_category": "General"
-            }
-        },
-        ".action.subscribe": {
-            "Gtag": {
-                "on": "click",
-                "event_action": "Submit Subscribe",
-                "event_category": "Subscribe"
+        {
+            ".action.search": {
+                "Gtag": {
+                    "on": "click",
+                    "event_action": "Submit Search",
+                    "event_category": "Search"
+                }
+            },
+            "#scrollToTopButton": {
+                "Gtag": {
+                    "on": "click",
+                    "event_action": "Go to top",
+                    "event_category": "General"
+                }
+            },
+            ".action.subscribe": {
+                "Gtag": {
+                    "on": "click",
+                    "event_action": "Submit Subscribe",
+                    "event_category": "Subscribe"
+                }
             }
         }
-    }
-</script>
+    </script>
     <script type="text/x-magento-init">
-    {
-        "#product_addtocart_form": {
-            "Gtag": {
-                "on": "submit",
-                "event_action": "Add To Cart Submit",
-                "event_category": "Product",
-                "event_label": "WR004",
-                "value":"159.94"
-            }
-        },
-        "#product-addtocart-button-discount":{
-            "Gtag": {
-                "on": "click",
-                "event_action": "Click Add To Cart(Discount)",
-                "event_category": "Product",
-                "event_label": "WR004",
-                "value":"159.94"
-            }
-        },
-        ".size-guide":{
-            "Gtag": {
-                "on": "click",
-                "event_action": "Click Size Guide",
-                "event_category": "Product",
-                "event_label": "WR004",
-                "value":"159.94"
-            }
-        },
-        "#pop_view_cart":{
-            "Gtag": {
-                "on": "click",
-                "event_action": "View Cart",
-                "event_category": "Product",
-                "event_label": "WR004",
-                "value":"159.94"
+        {
+            "#product_addtocart_form": {
+                "Gtag": {
+                    "on": "submit",
+                    "event_action": "Add To Cart Submit",
+                    "event_category": "Product",
+                    "event_label": "WR004",
+                    "value":"159.94"
+                }
+            },
+            "#product-addtocart-button-discount":{
+                "Gtag": {
+                    "on": "click",
+                    "event_action": "Click Add To Cart(Discount)",
+                    "event_category": "Product",
+                    "event_label": "WR004",
+                    "value":"159.94"
+                }
+            },
+            ".size-guide":{
+                "Gtag": {
+                    "on": "click",
+                    "event_action": "Click Size Guide",
+                    "event_category": "Product",
+                    "event_label": "WR004",
+                    "value":"159.94"
+                }
+            },
+            "#pop_view_cart":{
+                "Gtag": {
+                    "on": "click",
+                    "event_action": "View Cart",
+                    "event_category": "Product",
+                    "event_label": "WR004",
+                    "value":"159.94"
+                }
             }
         }
-    }
-
-</script>
-
+    </script>
     <div id="page-wrapper" class="page-wrapper">
         <x-header />
         <div class="breadcrumbs  py-2 md:py-5"></div>
@@ -570,7 +568,8 @@
                                     <span class="price-container price-final_price tax">
                                         <span class="price-label">Regular Price</span>
                                         <span id="old-price-950" class="price-wrapper ">
-                                            <span class="price">${{ $product['original_price'] }}</span>
+                                            <span class="price"
+                                                data-price-type="oldPrice">${{ $product['original_price'] }}</span>
                                         </span>
                                     </span>
                                 </span>
@@ -589,173 +588,104 @@
                             layout="responsive" width="722" height="160" alt=""></amp-img>
 
                         <div class="product-add-form">
-                            <form data-product-sku="WR004"
-                                action="https://www.stunring.com/checkout/cart/add/uenc/aHR0cHM6Ly93d3cuc3R1bnJpbmcuY29tL3N0dW5yaW5nLWhhbmRtYWRlLTItY3Qtcm91bmQtY3V0LWJyaWxsYW50LWhhbG8td2VkZGluZy1zZXQtd2l0aC1tYXRjaGluZy1iYW5kLXdyMDA0Lmh0bWw%2C/product/950/"
-                                method="post" id="product_addtocart_form" enctype="multipart/form-data">
-                                <input type="hidden" name="product" value="950" />
-                                <input type="hidden" name="selected_configurable_option" value="" />
-                                <input type="hidden" name="related_product" id="related-products-field"
-                                    value="" />
-                                <input type="hidden" name="item" value="950" />
-
-                                <input name="form_key" type="hidden" value="ADvvQ4K4xrhCwJx7" />
+                            <form action="{{ url('add_to_cart') }}" method="post" id="product_addtocart_form">
+                                @csrf
                                 <div class="product-options-wrapper" id="product-options-wrapper"
                                     data-hasrequired="&#x2A;&#x20;Required&#x20;Fields">
                                     <div class="fieldset" tabindex="0">
-
-                                        <script>
-                                            require([
-                                                'jquery',
-                                                'jquery-ui-modules/datepicker'
-                                            ], function($) {
-
-                                                //<![CDATA[
-                                                $.extend(true, $, {
-                                                    calendarConfig: {
-                                                        dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-                                                            "Saturday"
-                                                        ],
-                                                        dayNamesMin: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-                                                        monthNames: ["January", "February", "March", "April", "May", "June", "July", "August",
-                                                            "September", "October", "November", "December"
-                                                        ],
-                                                        monthNamesShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct",
-                                                            "Nov", "Dec"
-                                                        ],
-                                                        infoTitle: "About\u0020the\u0020calendar",
-                                                        firstDay: 0,
-                                                        closeText: "Close",
-                                                        currentText: "Go\u0020Today",
-                                                        prevText: "Previous",
-                                                        nextText: "Next",
-                                                        weekHeader: "WK",
-                                                        timeText: "Time",
-                                                        hourText: "Hour",
-                                                        minuteText: "Minute",
-                                                        dateFormat: $.datepicker.RFC_2822,
-                                                        showOn: "button",
-                                                        showAnim: "",
-                                                        changeMonth: true,
-                                                        changeYear: true,
-                                                        buttonImageOnly: null,
-                                                        buttonImage: null,
-                                                        showButtonPanel: true,
-                                                        showWeek: true,
-                                                        timeFormat: '',
-                                                        showTime: false,
-                                                        showHour: false,
-                                                        showMinute: false
-                                                    }
-                                                });
-
-                                                enUS = {
-                                                    "m": {
-                                                        "wide": ["January", "February", "March", "April", "May", "June", "July", "August",
-                                                            "September", "October", "November", "December"
-                                                        ],
-                                                        "abbr": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-                                                    }
-                                                }; // en_US locale reference
-                                                //]]>
-
-                                            });
-                                        </script>
-
+                                        @php
+                                            $attributes = collect($product['product_attributes'])
+                                                ->groupBy('attribute')
+                                                ->toArray();
+                                            $i = 0;
+                                        @endphp
+                                        @foreach ($attributes as $index => $attribute)
+                                        @php
+                                            $i++
+                                        @endphp
                                         <script type="text/x-magento-init">
-    {
-        "#product_addtocart_form": {
-            "priceOptions": {
-                "optionConfig": {"1447":{"17938":{"prices":{"oldPrice":{"amount":15,"adjustments":[]},"basePrice":{"amount":15},"finalPrice":{"amount":15},"promotionPrice":{"amount":15}},"type":"fixed","name":"4.0(U.S)"},"17939":{"prices":{"oldPrice":{"amount":15,"adjustments":[]},"basePrice":{"amount":15},"finalPrice":{"amount":15},"promotionPrice":{"amount":15}},"type":"fixed","name":"4.5(U.S)"},"17940":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"5.0(U.S)"},"17941":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"5.25(U.S)"},"17942":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"5.5(U.S)"},"17943":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"5.75(U.S)"},"17944":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"6.0(U.S)"},"17945":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"6.25(U.S)"},"17946":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"6.5(U.S)"},"17947":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"6.75(U.S)"},"17948":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"7.0(U.S)"},"17949":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"7.25(U.S)"},"17950":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"7.5(U.S)"},"17951":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"7.75(U.S)"},"17952":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"8.0(U.S)"},"17953":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"8.25(U.S)"},"17954":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"8.5(U.S)"},"17955":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"8.75(U.S)"},"17956":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"9.0(U.S)"},"17957":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"9.25(U.S)"},"17958":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"9.5(U.S)"},"17959":{"prices":{"oldPrice":{"amount":0,"adjustments":[]},"basePrice":{"amount":0},"finalPrice":{"amount":0},"promotionPrice":{"amount":0}},"type":"fixed","name":"9.75(U.S)"},"17960":{"prices":{"oldPrice":{"amount":15,"adjustments":[]},"basePrice":{"amount":15},"finalPrice":{"amount":15},"promotionPrice":{"amount":15}},"type":"fixed","name":"10.0(U.S)"},"17961":{"prices":{"oldPrice":{"amount":15,"adjustments":[]},"basePrice":{"amount":15},"finalPrice":{"amount":15},"promotionPrice":{"amount":15}},"type":"fixed","name":"10.5(U.S)"},"17962":{"prices":{"oldPrice":{"amount":15,"adjustments":[]},"basePrice":{"amount":15},"finalPrice":{"amount":15},"promotionPrice":{"amount":15}},"type":"fixed","name":"11.0(U.S)"},"17963":{"prices":{"oldPrice":{"amount":15,"adjustments":[]},"basePrice":{"amount":15},"finalPrice":{"amount":15},"promotionPrice":{"amount":15}},"type":"fixed","name":"11.5(U.S)"},"17964":{"prices":{"oldPrice":{"amount":15,"adjustments":[]},"basePrice":{"amount":15},"finalPrice":{"amount":15},"promotionPrice":{"amount":15}},"type":"fixed","name":"12.0(U.S)"}},"1448":{"prices":{"oldPrice":{"amount":15,"adjustments":[]},"basePrice":{"amount":15},"finalPrice":{"amount":15},"promotionPrice":{"amount":15}},"type":"fixed","name":"Engravings"}},
-                "controlContainer": ".field",
-                "priceHolderSelector": "[data-product-id='950'][data-role=priceBox]"
-            }
-        }
-    }
-</script>
-
+                                            {
+                                                "#product_addtocart_form": {
+                                                    "priceOptions": {
+                                                        "optionConfig": {
+                                                            "{{$index}}": {
+                                                            @foreach ($attribute as $key => $item)
+                                                                "{{$item['value_id']}}": {
+                                                                    "prices": {
+                                                                        "oldPrice": {
+                                                                            "amount": {{ $item['price_adjustment'] }},
+                                                                            "adjustments": []
+                                                                        },
+                                                                        "basePrice": {
+                                                                            "amount": {{ $item['price_adjustment'] }}
+                                                                        },
+                                                                        "finalPrice": {
+                                                                            "amount": {{ $item['price_adjustment'] }}
+                                                                        },
+                                                                        "promotionPrice": {
+                                                                            "amount": {{ $item['price_adjustment'] }}
+                                                                        }
+                                                                    },
+                                                                    "type": "fixed",
+                                                                    "name": "{{ $item['value'] }}"
+                                                                }@if ($key !== count($attribute) - 1),
+                                                                @endif
+                                                            @endforeach
+                                                            },
+                                                            "characters": {
+                                                                "prices": {
+                                                                    "oldPrice": {
+                                                                        "amount": 15,
+                                                                        "adjustments": []
+                                                                    },
+                                                                    "basePrice": {
+                                                                        "amount": 15
+                                                                    },
+                                                                    "finalPrice": {
+                                                                        "amount": 15
+                                                                    },
+                                                                    "promotionPrice": {
+                                                                        "amount": 15
+                                                                    }
+                                                                },
+                                                                "type": "fixed",
+                                                                "name": "Engravings"
+                                                            }
+                                                        },
+                                                        "controlContainer": ".field",
+                                                        "priceHolderSelector": "[data-product-id='950'][data-role=priceBox]"
+                                                    }
+                                                }
+                                            }
+                                        </script>
                                         <div class="field required relative">
-                                            <label class="label" for="select_1447">
-                                                <span>Ring Size</span>
+                                            <label class="label" for="select_{{$index}}">
+                                                <span>{{$index}}</span>
                                             </label>
                                             <div class="control">
-                                                <select name="options[1447]" id="select_1447"
+                                                <select name="options[{{$index}}]" id="select_{{$index}}"
                                                     class=" required product-custom-option admin__control-select  w-full h-9 border border-gray-300 outline-none p-2 text-sm"
-                                                    title="" data-selector="options[1447]">
+                                                    title="" data-selector="options[{{$index}}]">
                                                     <option value="">-- Please Select --</option>
-                                                    <option value="17938" price="15">4.0(U.S) +
-
-
-                                                        $15.00
-
-                                                    </option>
-                                                    <option value="17939" price="15">4.5(U.S) +
-
-
-                                                        $15.00
-
-                                                    </option>
-                                                    <option value="17940" price="0">5.0(U.S) </option>
-                                                    <option value="17941" price="0">5.25(U.S) </option>
-                                                    <option value="17942" price="0">5.5(U.S) </option>
-                                                    <option value="17943" price="0">5.75(U.S) </option>
-                                                    <option value="17944" price="0">6.0(U.S) </option>
-                                                    <option value="17945" price="0">6.25(U.S) </option>
-                                                    <option value="17946" price="0">6.5(U.S) </option>
-                                                    <option value="17947" price="0">6.75(U.S) </option>
-                                                    <option value="17948" price="0">7.0(U.S) </option>
-                                                    <option value="17949" price="0">7.25(U.S) </option>
-                                                    <option value="17950" price="0">7.5(U.S) </option>
-                                                    <option value="17951" price="0">7.75(U.S) </option>
-                                                    <option value="17952" price="0">8.0(U.S) </option>
-                                                    <option value="17953" price="0">8.25(U.S) </option>
-                                                    <option value="17954" price="0">8.5(U.S) </option>
-                                                    <option value="17955" price="0">8.75(U.S) </option>
-                                                    <option value="17956" price="0">9.0(U.S) </option>
-                                                    <option value="17957" price="0">9.25(U.S) </option>
-                                                    <option value="17958" price="0">9.5(U.S) </option>
-                                                    <option value="17959" price="0">9.75(U.S) </option>
-                                                    <option value="17960" price="15">10.0(U.S) +
-
-
-                                                        $15.00
-
-                                                    </option>
-                                                    <option value="17961" price="15">10.5(U.S) +
-
-
-                                                        $15.00
-
-                                                    </option>
-                                                    <option value="17962" price="15">11.0(U.S) +
-
-
-                                                        $15.00
-
-                                                    </option>
-                                                    <option value="17963" price="15">11.5(U.S) +
-
-
-                                                        $15.00
-
-                                                    </option>
-                                                    <option value="17964" price="15">12.0(U.S) +
-
-
-                                                        $15.00
-
-                                                    </option>
+                                                    @foreach ($attribute as $item)
+                                                        <option value="{{ $item['value_id'] }}"
+                                                            price="{{ $item['price_adjustment'] }}">
+                                                            {{ $item['value'] }} + ${{ number_format($item['price_adjustment'], 2) }}
+                                                        </option>
+                                                    @endforeach
                                                 </select>
                                             </div>
-                                            <div id="size-guide" on="tap:product-pop-size-guide.open"
+                                            @if ($index == 'Size')
+                                                <div id="size-guide" on="tap:product-pop-size-guide.open"
                                                 class="size-guide absolute top-1 right-3 md:top-2/3 md:right-16 text-sm underline text-gray-700 cursor-pointer">
                                                 Size Guide </div>
+                                            @endif
                                         </div>
-
+                                        @endforeach
                                         <div class="field">
-                                            <label class="label" for="options_1448_text">
+                                            <label class="label" for="options_characters_text">
                                                 <span>Engravings</span>
                                                 <span class="price-notice">+
-
                                                     <span class="price-container tax">
                                                         <span data-price-amount="15" data-price-type=""
                                                             class="price-wrapper ">$15.00</span>
@@ -763,27 +693,28 @@
                                                 </span> </label>
 
                                             <div class="control">
-                                                <input type="text" id="options_1448_text"
+                                                <input type="text" id="options_characters_text"
                                                     class="input-text product-custom-option w-full h-9 border border-gray-300 outline-none p-2 text-sm"
                                                     data-validate="&#x7B;&quot;maxlength&quot;&#x3A;&quot;16&quot;,&quot;validate-no-utf8mb4-characters&quot;&#x3A;true&#x7D;"
-                                                    name="options[1448]" data-selector="options[1448]" value=""
+                                                    name="options[characters]" data-selector="options[characters]" value=""
                                                     maxlength="16" />
-                                                <p class="note note_1448">
+                                                <p class="note note_characters">
                                                     Maximum 16 characters <span
                                                         class="character-counter no-display"></span>
                                                 </p>
                                             </div>
+                                            <input type="hidden" name="product_id" value="{{ $product['id'] }}">
                                             <script type="text/x-magento-init">
-        {
-            "[data-selector='options[1448]']": {
-                "Magento_Catalog/js/product/remaining-characters": {
-                    "maxLength":  "16",
-                    "noteSelector": ".note_1448",
-                    "counterSelector": ".note_1448 .character-counter"
-                }
-            }
-        }
-    </script>
+                                                {
+                                                    "[data-selector='options[characters]']": {
+                                                        "Magento_Catalog/js/product/remaining-characters": {
+                                                            "maxLength":  "16",
+                                                            "noteSelector": ".note_characters",
+                                                            "counterSelector": ".note_characters .character-counter"
+                                                        }
+                                                    }
+                                                }
+                                            </script>
                                         </div>
                                     </div>
                                 </div>
@@ -807,7 +738,7 @@
                                                 </div>
                                             </div>
                                             <div class="actions flex-grow">
-                                                <button type="submit" title="Add&#x20;to&#x20;Cart"
+                                                <button type="submit"
                                                     class="action primary tocart  leading-9  w-full"
                                                     id="product-addtocart-button" disabled>
                                                     <span>Add to Cart</span>
@@ -816,24 +747,55 @@
                                         </div>
                                     </div>
                                     <script type="text/x-magento-init">
-    {
-        "#product_addtocart_form": {
-            "Magento_Catalog/js/validate-product": {}
-        }
-    }
-</script>
+                                        {
+                                            "#product_addtocart_form": {
+                                                "Magento_Catalog/js/validate-product": {}
+                                            }
+                                        }
+                                    </script>
                                 </div>
                             </form>
                         </div>
-
                         <script type="text/x-magento-init">
-    {
-        "[data-role=priceBox][data-price-box=product-id-950]": {
-            "priceBox": {
-                "priceConfig":  {"productId":950,"priceFormat":{"pattern":"$%s","precision":2,"requiredPrecision":2,"decimalSymbol":".","groupSymbol":",","groupLength":3,"integerRequired":false},"prices":{"oldPrice":{"amount":271.13,"adjustments":[]},"basePrice":{"amount":159.94,"adjustments":[]},"finalPrice":{"amount":159.94,"adjustments":[]},"promotionPrice":{"amount":127.95,"adjustments":[]}},"idSuffix":"_clone","tierPrices":[]}            }
-        }
-    }
-</script>
+                            {
+                                "[data-role=priceBox][data-price-box=product-id-950]": {
+                                    "priceBox": {
+                                        "priceConfig": {
+                                            "productId": 950,
+                                            "priceFormat": {
+                                                "pattern": "$%s",
+                                                "precision": 2,
+                                                "requiredPrecision": 2,
+                                                "decimalSymbol": ".",
+                                                "groupSymbol": ",",
+                                                "groupLength": 3,
+                                                "integerRequired": false
+                                            },
+                                            "prices": {
+                                                "oldPrice": {
+                                                    "amount": {{ $product['original_price'] }},
+                                                    "adjustments": []
+                                                },
+                                                "basePrice": {
+                                                    "amount": 159.94,
+                                                    "adjustments": []
+                                                },
+                                                "finalPrice": {
+                                                    "amount": 159.94,
+                                                    "adjustments": []
+                                                },
+                                                "promotionPrice": {
+                                                    "amount": {{ $product['current_price'] }},
+                                                    "adjustments": []
+                                                }
+                                            },
+                                            "idSuffix": "_clone",
+                                            "tierPrices": []
+                                        }
+                                    }
+                                }
+                            }
+                        </script>
                         <ul class="product-extra-info pt-5 px-3 md:px-0 border-t border-gray-200">
                             <li class="title text-xs md:text-sm">* This item requires 5-15 business days to handcraft.
                             </li>
@@ -931,7 +893,6 @@
                                         <li>Items that were worn, or sent to you as Replacement/Exchange are not
                                             refundable or exchangeable.</li>
                                     </ol>
-
                                     <h2 class="font-semibold text-lg my-1">Refunds</h2>
                                     <p>Returns will be processed within 5 days upon receipt of your package. The refund
                                         will be issued to your original payment account and cannot be returned to
@@ -948,7 +909,6 @@
                                             defective items, customers must contact STUNRING within 48 hours of
                                             receiving their order.)</li>
                                     </ol>
-
                                     <h2 class="font-semibold text-lg my-1">Cancellation</h2>
                                     <p>We stand behind our jewelry to satisfy you with every order and want your order
                                         to be made just the way you want it! Please review your
@@ -977,14 +937,10 @@
                                         <li>If the cancellation is made over more than 24 hours after the order was
                                             placed, there would be a 10% cancellation fee.</li>
                                     </ol>
-
-
-
                                     <a on="tap:product-pop-return.close" class="lightbox-close">&times;</a>
                                 </div>
                             </div>
                         </amp-lightbox>
-
                         <amp-lightbox id="product-pop-shipping" layout="nodisplay" animate-in="fly-in-top"
                             scrollable>
                             <div class="lightbox">
@@ -1040,7 +996,6 @@
                                 </div>
                             </div>
                         </amp-lightbox>
-
                         <amp-lightbox id="product-pop-warranty" layout="nodisplay" animate-in="fly-in-top"
                             scrollable>
                             <div class="lightbox">
@@ -1076,7 +1031,6 @@
                                 </div>
                             </div>
                         </amp-lightbox>
-
                         <amp-lightbox id="product-pop-stones" layout="nodisplay" animate-in="fly-in-top" scrollable>
                             <div class="lightbox">
                                 <div class="lightbox-content">
@@ -1118,7 +1072,6 @@
                                 </div>
                             </div>
                         </amp-lightbox>
-
                         <amp-lightbox id="product-pop-size-guide" layout="nodisplay" animate-in="fly-in-top"
                             scrollable>
                             <div class="lightbox">
@@ -1494,15 +1447,15 @@
                             </amp-selector>
                         </amp-layout>
                         <script type="text/x-magento-init">
-    {
-        "[data-gallery-role=gallery-placeholder]": {
-            "Magento_ProductVideo/js/fotorama-add-video-events": {
-                "videoData": [{"mediaType":"image","videoUrl":null,"isBase":true},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"external-video","videoUrl":"https:\/\/www.youtube.com\/watch?v=gi6FuoGRn_U","isBase":false}],
-                "videoSettings": [{"playIfBase":"0","showRelated":"0","videoAutoRestart":"0"}],
-                "optionsVideoData": []            }
-        }
-    }
-</script>
+                            {
+                                "[data-gallery-role=gallery-placeholder]": {
+                                    "Magento_ProductVideo/js/fotorama-add-video-events": {
+                                        "videoData": [{"mediaType":"image","videoUrl":null,"isBase":true},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"image","videoUrl":null,"isBase":false},{"mediaType":"external-video","videoUrl":"https:\/\/www.youtube.com\/watch?v=gi6FuoGRn_U","isBase":false}],
+                                        "videoSettings": [{"playIfBase":"0","showRelated":"0","videoAutoRestart":"0"}],
+                                        "optionsVideoData": []            }
+                                }
+                            }
+                        </script>
                         <div class="action-skip-wrapper"><a class="action skip gallery-prev-area"
                                 href="#gallery-prev-area">
                                 <span>
@@ -3275,29 +3228,24 @@
                         </div>
                         <div id="quick-view-container"></div>
                         <script type="text/x-magento-init">
-        {
-            "*": {
-                "Magento_Ui/js/core/app": {
-                    "components": {
-                        "slider_grid_widget": {
-                            "component": "Swetelove_CatalogWidget/js/productList/slider_grid",
-                             "items":5                        }
-                    }
-                }
-            }
-        }
-    </script>
-
-
-
-
+                            {
+                                "*": {
+                                    "Magento_Ui/js/core/app": {
+                                        "components": {
+                                            "slider_grid_widget": {
+                                                "component": "Swetelove_CatalogWidget/js/productList/slider_grid",
+                                                "items":5                        }
+                                        }
+                                    }
+                                }
+                            }
+                        </script>
                         <div class="recently-viewed block widget block-products-slider-list mt-20"
                             data-bind="scope: 'recently_viewed'">
                             <div class="block-title font-sans text-xl md:text-2xl text-center font-bold uppercase"
                                 data-bind="visible:products().length>0" style="display: none">
                                 <span data-bind="text:'Recently Viewed'"></span>
                             </div>
-
                             <div class="recently-viewed-carousel swiper">
                                 <div class="swiper-wrapper">
                                     <!-- ko foreach: {data: loadProducts(10), as: 'product'} -->
