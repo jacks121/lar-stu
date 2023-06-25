@@ -206,11 +206,11 @@ class ShoppingCart
     public function removeFromCart(string $uniqueId): void
     {
         $cartData = $this->getCartData();
-    
+
         $cartData = array_filter($cartData, function ($item) use ($uniqueId) {
             return $item['unique_id'] !== $uniqueId;
         });
-    
+
         $this->updateCartData($cartData);
     }
 
@@ -247,32 +247,38 @@ class ShoppingCart
     }
 
     /**
-     * 调整购物车中的商品数量。
+     * 调整购物车中商品的数量。
      *
-     * @param int $productId
-     * @param array $options
-     * @param int $quantity
+     * @param array $updates 包含唯一标识符和对应数量的关联数组
      * @return void
+     * @throws InvalidArgumentException 如果在购物车中找不到指定的唯一标识符对应的商品
      */
-    public function adjustItemQuantity(int $productId, array $options, int $quantity): void
+    public function adjustItemQuantities(array $updates): void
     {
         $cartData = $this->getCartData();
 
+        // 构建关联数组以加快查找
+        $cartItems = [];
         foreach ($cartData as &$cartItem) {
-            if ($this->isCartItemEqual($cartItem, ['id' => $productId, 'options' => $options])) {
-                $cartItem['qty'] += $quantity;
+            $cartItems[$cartItem['unique_id']] = &$cartItem;
+        }
 
-                if ($cartItem['qty'] <= 0) {
-                    $this->removeItemFromCart($productId, $options);
+        foreach ($updates as $uniqueId => $quantity) {
+            if (isset($cartItems[$uniqueId])) {
+                $cartItems[$uniqueId]['qty'] = $quantity['qty']; // 将数量转换为整数
+
+                if ($cartItems[$uniqueId]['qty'] <= 0) {
+                    $this->removeFromCart($uniqueId);
                 } else {
-                    $this->updateCartData($cartData);
+                    // 调用重新计算小计的方法
+                    $cartItems[$uniqueId]['subtotal'] = $cartItems[$uniqueId]['price'] * $cartItems[$uniqueId]['qty'];
                 }
-
-                return;
+            } else {
+                throw new InvalidArgumentException("Item with unique ID {$uniqueId} not found in cart.");
             }
         }
 
-        throw new InvalidArgumentException("Item with product ID {$productId} and options " . json_encode($options) . " not found in cart.");
+        $this->updateCartData($cartData);
     }
 
     /**
