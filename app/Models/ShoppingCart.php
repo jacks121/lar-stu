@@ -3,11 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Session\Session;
-use InvalidArgumentException;
+use App\Exceptions\ShoppingCartException;
 use App\Models\Product;
+use InvalidArgumentException;
 
 class ShoppingCart
 {
+    const PRICE_PER_CHARACTER = 15;
+    const TAX_RATE = 0.1;
+
     private Session $session;
     private Product $product;
 
@@ -15,6 +19,31 @@ class ShoppingCart
     {
         $this->session = $session;
         $this->product = $product;
+    }
+
+    /**
+     * 获取购物车数据，包括小计、税费和订单总额。
+     *
+     * @return array
+     */
+    public function getCartDataWithSummary(): array
+    {
+        $cartData = $this->getCartData();
+        $subtotal = 0;
+
+        foreach ($cartData as $cartItem) {
+            $subtotal += $cartItem['subtotal'] ?? 0;
+        }
+
+        $tax = $subtotal * self::TAX_RATE;
+        $total = $subtotal + $tax;
+
+        return [
+            'items' => $cartData, // 购物车数据项
+            'subtotal' => $subtotal, // 小计金额
+            'tax' => $tax, // 税费金额
+            'total' => $total, // 订单总额
+        ];
     }
 
     /**
@@ -41,12 +70,16 @@ class ShoppingCart
      *
      * @param array $params
      * @return void
-     * @throws InvalidArgumentException
+     * @throws ShoppingCartException
      */
     private function validateParams(array $params): void
     {
-        if (!isset($params['product_id'], $params['options'], $params['qty'])) {
-            throw new InvalidArgumentException("Invalid parameters. 'product_id', 'options', and 'qty' are required.");
+        $requiredParams = ['product_id', 'options', 'qty'];
+
+        foreach ($requiredParams as $param) {
+            if (!isset($params[$param])) {
+                throw new ShoppingCartException("Invalid parameters. '{$param}' is required.");
+            }
         }
     }
 
@@ -72,13 +105,17 @@ class ShoppingCart
      */
     private function buildCartItem(array $product, array $params, float $price, ?string $imageUrl): array
     {
+        $subtotal = $price * $params['qty'];
         return [
+            'unique_id' => md5($product['id'] . serialize($params['options'])),
             'id' => $product['id'],
             'name' => $product['product_name'],
             'image_url' => $imageUrl,
             'price' => $price,
             'options' => $params['options'],
             'qty' => $params['qty'],
+            'subtotal' => $subtotal,
+            'original_price' => $product['original_price'],
         ];
     }
 
@@ -91,18 +128,35 @@ class ShoppingCart
     private function updateCart(array $newCartItem): void
     {
         $cartData = $this->getCartData();
-    
-        foreach ($cartData as &$cartItem) {
-            if ($cartItem['id'] === $newCartItem['id'] && $cartItem['options'] === $newCartItem['options']) {
-                $cartItem['qty'] += $newCartItem['qty'];
-                $this->updateCartData($cartData);
-                return;
+
+        $foundKey = null;
+        foreach ($cartData as $key => &$item) {
+            if ($this->isCartItemEqual($item, $newCartItem)) {
+                $foundKey = $key;
+                break;
             }
         }
- 
-        // If the loop completes without returning, the item is not in the cart.
-        $cartData[] = $newCartItem;
+
+        if ($foundKey !== null) {
+            $cartData[$foundKey]['qty'] += $newCartItem['qty'];
+            $cartData[$foundKey]['subtotal'] += $newCartItem['subtotal']; // 更新小计
+        } else {
+            $cartData[] = $newCartItem;
+        }
+
         $this->updateCartData($cartData);
+    }
+
+    /**
+     * 检查两个购物车项是否相等。
+     *
+     * @param array $item1
+     * @param array $item2
+     * @return bool
+     */
+    private function isCartItemEqual(array $item1, array $item2): bool
+    {
+        return $item1['id'] === $item2['id'] && $item1['options'] === $item2['options'];
     }
 
     /**
@@ -114,15 +168,20 @@ class ShoppingCart
      */
     private function calculatePrice(array $product, array $options): float
     {
-        $priceAdjustment = collect($product['product_attributes'])
+        $optionValueIds = array_values($options);
+
+        $matchingAttributes = collect($product['product_attributes'])
             ->whereIn('attribute', array_keys($options))
-            ->whereIn('value_id', array_values($options))
-            ->sum('price_adjustment');
+            ->whereIn('value_id', $optionValueIds);
+
+        $priceAdjustment = $matchingAttributes->sum('price_adjustment');
 
         $price = $product['current_price'];
-        if (data_get($options, 'characters', false)) {
-            $price += 15;
+
+        if (isset($options['characters'])) {
+            $price += self::PRICE_PER_CHARACTER;
         }
+
         $price += $priceAdjustment;
 
         return $price;
@@ -144,10 +203,14 @@ class ShoppingCart
      * @param int $productId
      * @return void
      */
-    public function removeFromCart(int $productId): void
+    public function removeFromCart(string $uniqueId): void
     {
         $cartData = $this->getCartData();
-        $cartData = array_filter($cartData, fn($item) => $item['id'] !== $productId);
+    
+        $cartData = array_filter($cartData, function ($item) use ($uniqueId) {
+            return $item['unique_id'] !== $uniqueId;
+        });
+    
         $this->updateCartData($cartData);
     }
 
@@ -158,7 +221,8 @@ class ShoppingCart
      */
     public function cartClear(): void
     {
-        $this->updateCartData([]);
+        $this->session->forget('cart_data');
+        $this->session->save();
     }
 
     /**
@@ -195,7 +259,7 @@ class ShoppingCart
         $cartData = $this->getCartData();
 
         foreach ($cartData as &$cartItem) {
-            if ($cartItem['id'] === $productId && $cartItem['options'] === $options) {
+            if ($this->isCartItemEqual($cartItem, ['id' => $productId, 'options' => $options])) {
                 $cartItem['qty'] += $quantity;
 
                 if ($cartItem['qty'] <= 0) {
@@ -221,9 +285,11 @@ class ShoppingCart
     public function removeItemFromCart(int $productId, array $options): void
     {
         $cartData = $this->getCartData();
-        $cartData = array_filter($cartData, fn($item) => !($item['id'] === $productId && $item['options'] === $options));
+
+        $cartData = array_filter($cartData, function ($item) use ($productId, $options) {
+            return !$this->isCartItemEqual($item, ['id' => $productId, 'options' => $options]);
+        });
 
         $this->updateCartData($cartData);
     }
-
 }

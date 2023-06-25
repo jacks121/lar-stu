@@ -26,9 +26,10 @@ Route::get('review/gallery', [AjaxController::class, 'reviewGallery'])->name('re
 Route::get('product/{product_id}.html', [ProductController::class, 'index'])
     ->where('product_id', '[a-z0-9]+'); // 产品ID，只包含小写字母和数字
 
-Route::post('add_to_cart', [ProductController::class, 'addToCart']);
+Route::post('add_to_cart', [CartController::class, 'addToCart']);
 
 Route::get('checkout/cart', [CartController::class, 'show'])->name('cart.show');
+Route::post('checkout/cart/delete', [CartController::class, 'delete'])->name('cart.delete');
 
 Route::any('{any}', [CategoryController::class, 'index'])->where('any', '.*');
 
