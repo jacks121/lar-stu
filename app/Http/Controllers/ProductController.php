@@ -20,8 +20,7 @@ class ProductController extends Controller
     public function index($id)
     {
         $product = $this->product->getProductData($id);
-        // $this->product->indexToElasticsearch();
-        // dd($product);
+
         return view('pc.product', [
             'product' => $product,
         ]);

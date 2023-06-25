@@ -96,7 +96,6 @@ class CategoryController extends Controller
             'priceMax' => $priceRange ? $priceRange[1] : null,
             'details' => $details,
         ];
-        // dd($params);
         // 调用搜索方法获取商品列表
         $result = $this->product->searchProducts($params);
         // 将搜索结果绑定到模板

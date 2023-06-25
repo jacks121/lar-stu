@@ -16,8 +16,6 @@ class CartController extends Controller
 
     public function show(Request $request)
     {
-        // $this->cart->cartClear();
-        // dd($this->cart->cartList());
         return view('pc.cart', [
             'cartList' => $this->cart->cartList(),
             'orderSummary' => $this->cart->getCartDataWithSummary()
