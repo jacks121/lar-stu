@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\AjaxController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,17 +18,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-use App\Http\Controllers\IndexController;
 
 Route::get('/', [IndexController::class, 'index']);
 
-Route::get('review/gallery', 'App\Http\Controllers\AjaxController@reviewGallery')->name('review.gallery');
+Route::get('review/gallery', [AjaxController::class, 'reviewGallery'])->name('review.gallery');
 
-Route::get('product/{product_id}.html', 'App\Http\Controllers\ProductController@index')
+Route::get('product/{product_id}.html', [ProductController::class, 'index'])
     ->where('product_id', '[a-z0-9]+'); // 产品ID，只包含小写字母和数字
 
-Route::post('add_to_cart', 'App\Http\Controllers\ProductController@addToCart');
+Route::post('add_to_cart', [ProductController::class, 'addToCart']);
 
-Route::any('{any}', 'App\Http\Controllers\CategoryController@index')->where('any', '.*');
+Route::get('checkout/cart', [CartController::class, 'show'])->name('cart.show');
 
+Route::any('{any}', [CategoryController::class, 'index'])->where('any', '.*');
 

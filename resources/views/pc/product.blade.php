@@ -3454,7 +3454,7 @@
                     <button
                         class="action checkout w-full text-center text-white bg-amber cursor-pointer font-semibold p-3"
                         id="pop_view_cart" type="button" data-role="closeBtn"
-                        onclick="jQuery('body').trigger('processStart');window.location.href='https://www.stunring.com/checkout/cart/';"><i
+                        onclick="jQuery('body').trigger('processStart');window.location.href='{{route('cart.show')}}';"><i
                             class="fa fa-lock mr-3"></i>View Cart & Checkout</button>
                 </div>
             </div>
