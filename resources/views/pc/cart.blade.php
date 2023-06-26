@@ -3,7 +3,7 @@
 
 <head>
     <script>
-        var BASE_URL = 'https://www.stunring.com/';
+        var BASE_URL = '{{url("/")}}';
         var require = {
             "baseUrl": "/static/version1681280332/frontend/Swetelove/desktop/en_US"
         };
@@ -445,7 +445,7 @@
                                 "autocomplete": "off",
                                 "customerRegisterUrl": "https:\/\/www.stunring.com\/customer\/account\/create\/",
                                 "customerForgotPasswordUrl": "https:\/\/www.stunring.com\/customer\/account\/forgotpassword\/",
-                                "baseUrl": "https:\/\/www.stunring.com\/"
+                                "baseUrl": "{{url('/')}}"
                             };
                         </script>
                         <!-- ko template: getTemplate() -->
@@ -460,17 +460,6 @@
         }
     </script>
                     </div>
-                    <script type="text/x-magento-init">
-    {
-        "*": {
-            "Magento_Customer/js/section-config": {
-                "sections": {"stores\/store\/switch":["*"],"stores\/store\/switchrequest":["*"],"directory\/currency\/switch":["*"],"*":["messages"],"customer\/account\/logout":["*","recently_viewed_product","recently_compared_product"],"customer\/account\/loginpost":["*"],"customer\/account\/createpost":["*"],"customer\/account\/editpost":["*"],"customer\/ajax\/login":["checkout-data","cart","captcha"],"catalog\/product_compare\/add":["compare-products"],"catalog\/product_compare\/remove":["compare-products"],"catalog\/product_compare\/clear":["compare-products"],"sales\/guest\/reorder":["cart"],"sales\/order\/reorder":["cart"],"checkout\/cart\/add":["cart","directory-data"],"checkout\/cart\/delete":["cart"],"checkout\/cart\/updatepost":["cart"],"checkout\/cart\/updateitemoptions":["cart"],"checkout\/cart\/couponpost":["cart"],"checkout\/cart\/estimatepost":["cart"],"checkout\/cart\/estimateupdatepost":["cart"],"checkout\/onepage\/saveorder":["cart","checkout-data","last-ordered-items"],"checkout\/sidebar\/removeitem":["cart"],"checkout\/sidebar\/updateitemqty":["cart"],"rest\/*\/v1\/carts\/*\/payment-information":["cart","last-ordered-items"],"rest\/*\/v1\/guest-carts\/*\/payment-information":["cart"],"rest\/*\/v1\/guest-carts\/*\/selected-payment-method":["cart","checkout-data"],"rest\/*\/v1\/carts\/*\/selected-payment-method":["cart","checkout-data"],"paypal\/express\/placeorder":["cart","checkout-data"],"paypal\/payflowexpress\/placeorder":["cart","checkout-data"],"paypal\/express\/onauthorization":["cart","checkout-data"],"review\/product\/post":["review"],"wishlist\/index\/add":["wishlist"],"wishlist\/index\/remove":["wishlist"],"wishlist\/index\/updateitemoptions":["wishlist"],"wishlist\/index\/update":["wishlist"],"wishlist\/index\/cart":["wishlist","cart"],"wishlist\/index\/fromcart":["wishlist","cart"],"wishlist\/index\/allcart":["wishlist","cart"],"wishlist\/shared\/allcart":["wishlist","cart"],"wishlist\/shared\/cart":["cart"]},
-                "clientSideSections": ["checkout-data","cart-data"],
-                "baseUrls": ["https:\/\/www.stunring.com\/"],
-                "sectionNames": ["messages","customer","compare-products","last-ordered-items","cart","directory-data","captcha","review","wishlist","recently_viewed_product","recently_compared_product","product_data_storage","paypal-billing-agreement"]            }
-        }
-    }
-</script>
                     <script type="text/x-magento-init">
     {
         "*": {
@@ -674,14 +663,14 @@ class="minutes">{{ mm }}</span>:<span
                                 </ul>
                             </div>
                             <div class="cart-main">
-                                <form action="https://www.stunring.com/checkout/cart/updatePost/" method="post"
+                                <form action="{{ route('cart.show') }}" method="get"
                                     id="form-validate"
                                     data-mage-init='{"Magento_Checkout/js/action/update-shopping-cart":
-              {"validationURL" : "https://www.stunring.com/checkout/cart/updateItemQty/",
+              {"validationURL" : "{{route('cart.updateItemQty')}}",
               "updateCartActionContainer": "#update_cart_action_container"}
           }'
                                     class="form form-cart">
-                                    <input name="form_key" type="hidden" value="fRkXm8EcvXrV2ann" />
+                                    @csrf
                                     <div class="cart table-wrapper">
                                         <table id="shopping-cart-table" class="cart items data table"
                                             data-mage-init='{"shoppingCart":{"emptyCartButton": ".action.clear",
@@ -757,9 +746,9 @@ class="minutes">{{ mm }}</span>:<span
                                                                             <i class="fa fa-minus"
                                                                                 aria-hidden="true"></i>
                                                                         </div>
-                                                                        <input id="cart-{{ $item['id'] }}-qty"
-                                                                            name="cart[{{ $item['id'] }}][qty]"
-                                                                            data-cart-item-id="{{ $item['id'] }}"
+                                                                        <input id="cart-{{ $item['unique_id'] }}-qty"
+                                                                            name="cart[{{ $item['unique_id'] }}][qty]"
+                                                                            data-cart-item-id="{{ $item['unique_id'] }}"
                                                                             value="{{ $item['qty'] }}"
                                                                             type="number" size="4"
                                                                             title="Qty"
@@ -1305,139 +1294,6 @@ class="minutes">{{ mm }}</span>:<span
         </script>
                                         <script>
                                             window.checkoutConfig = {
-                                                "payment": {
-                                                    "ccform": {
-                                                        "icons": {
-                                                            "AE": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/ae.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "American Express"
-                                                            },
-                                                            "VI": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/vi.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Visa"
-                                                            },
-                                                            "MC": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/mc.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "MasterCard"
-                                                            },
-                                                            "DI": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/di.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Discover"
-                                                            },
-                                                            "JCB": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/jcb.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "JCB"
-                                                            },
-                                                            "SM": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/sm.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Switch\/Maestro"
-                                                            },
-                                                            "DN": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/dn.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Diners"
-                                                            },
-                                                            "SO": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/so.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Solo"
-                                                            },
-                                                            "MI": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/mi.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Maestro International"
-                                                            },
-                                                            "MD": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/md.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Maestro Domestic"
-                                                            },
-                                                            "HC": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/hc.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Hipercard"
-                                                            },
-                                                            "ELO": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/elo.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Elo"
-                                                            },
-                                                            "AU": {
-                                                                "url": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/Magento_Payment\/images\/cc\/au.png",
-                                                                "width": 46,
-                                                                "height": 30,
-                                                                "title": "Aura"
-                                                            }
-                                                        }
-                                                    },
-                                                    "paypalExpress": {
-                                                        "paymentAcceptanceMarkHref": "https:\/\/www.paypal.com\/us\/cgi-bin\/webscr?cmd=xpt\/Marketing\/popup\/OLCWhatIsPayPal-outside",
-                                                        "paymentAcceptanceMarkSrc": "https:\/\/www.paypalobjects.com\/webstatic\/en_US\/i\/buttons\/pp-acceptance-medium.png",
-                                                        "isContextCheckout": false,
-                                                        "inContextConfig": [],
-                                                        "redirectUrl": {
-                                                            "paypal_express": "https:\/\/www.stunring.com\/paypal\/express\/start\/",
-                                                            "paypal_express_credit_card": "https:\/\/www.stunring.com\/paypal\/express\/start\/type\/credit\/"
-                                                        },
-                                                        "billingAgreementCode": {
-                                                            "paypal_express": null,
-                                                            "paypal_express_credit_card": null
-                                                        }
-                                                    },
-                                                    "paypalIframe": [],
-                                                    "paypalBillingAgreement": {
-                                                        "agreements": [],
-                                                        "transportName": "ba_agreement_id"
-                                                    },
-                                                    "iframe": {
-                                                        "timeoutTime": {
-                                                            "payflowpro": 30000
-                                                        },
-                                                        "dateDelim": {
-                                                            "payflowpro": ""
-                                                        },
-                                                        "cardFieldsMap": {
-                                                            "payflowpro": []
-                                                        },
-                                                        "source": {
-                                                            "payflowpro": "https:\/\/www.stunring.com\/static\/version1681280332\/frontend\/Swetelove\/desktop\/en_US\/blank.html"
-                                                        },
-                                                        "controllerName": {
-                                                            "payflowpro": "checkout_flow"
-                                                        },
-                                                        "cgiUrl": {
-                                                            "payflowpro": "https:\/\/payflowlink.paypal.com"
-                                                        },
-                                                        "placeOrderUrl": {
-                                                            "payflowpro": "https:\/\/www.stunring.com\/paypal\/transparent\/requestSecureToken\/"
-                                                        },
-                                                        "saveOrderUrl": {
-                                                            "payflowpro": "https:\/\/www.stunring.com\/checkout\/onepage\/saveOrder\/"
-                                                        },
-                                                        "expireYearLength": {
-                                                            "payflowpro": 2
-                                                        }
-                                                    }
-                                                },
-                                                "formKey": "fRkXm8EcvXrV2ann",
                                                 "customerData": [],
                                                 "quoteData": {
                                                     "entity_id": "WPfmysplpup68VFQhT3degn3IuZZNAcP",
@@ -1500,182 +1356,6 @@ class="minutes">{{ mm }}</span>:<span
                                                     },
                                                     "messages": []
                                                 },
-                                                "quoteItemData": [{
-                                                    "item_id": "96147",
-                                                    "quote_id": "52696",
-                                                    "created_at": "2023-06-26 06:06:43",
-                                                    "updated_at": "2023-06-26 06:07:04",
-                                                    "product_id": "1687",
-                                                    "store_id": 1,
-                                                    "parent_item_id": null,
-                                                    "is_virtual": "0",
-                                                    "sku": "ER144",
-                                                    "name": "STUNRING Handmade 3 CT Round Cut Engagement Ring",
-                                                    "description": null,
-                                                    "applied_rule_ids": null,
-                                                    "additional_data": null,
-                                                    "is_qty_decimal": false,
-                                                    "no_discount": "0",
-                                                    "weight": null,
-                                                    "qty": 2,
-                                                    "price": "115.9500",
-                                                    "base_price": "115.9500",
-                                                    "custom_price": null,
-                                                    "discount_percent": "0.0000",
-                                                    "discount_amount": "0.0000",
-                                                    "base_discount_amount": "0.0000",
-                                                    "tax_percent": "0.0000",
-                                                    "tax_amount": "0.0000",
-                                                    "base_tax_amount": "0.0000",
-                                                    "row_total": "231.9000",
-                                                    "base_row_total": "231.9000",
-                                                    "row_total_with_discount": "0.0000",
-                                                    "row_weight": "0.0000",
-                                                    "product_type": "simple",
-                                                    "base_tax_before_discount": null,
-                                                    "tax_before_discount": null,
-                                                    "original_custom_price": null,
-                                                    "redirect_url": null,
-                                                    "base_cost": null,
-                                                    "price_incl_tax": "115.9500",
-                                                    "base_price_incl_tax": "115.9500",
-                                                    "row_total_incl_tax": "231.9000",
-                                                    "base_row_total_incl_tax": "231.9000",
-                                                    "discount_tax_compensation_amount": "0.0000",
-                                                    "base_discount_tax_compensation_amount": "0.0000",
-                                                    "gift_message_id": null,
-                                                    "free_shipping": "0",
-                                                    "qty_options": [],
-                                                    "product": {
-                                                        "entity_id": "1687",
-                                                        "attribute_set_id": "4",
-                                                        "type_id": "simple",
-                                                        "sku": "ER144",
-                                                        "has_options": "1",
-                                                        "required_options": "1",
-                                                        "created_at": "2021-07-31 05:02:47",
-                                                        "updated_at": "2023-02-23 03:00:10",
-                                                        "price": "242.780000",
-                                                        "special_price": "144.940000",
-                                                        "name": "STUNRING Handmade 3 CT Round Cut Engagement Ring",
-                                                        "small_image": "\/e\/r\/er144_6104d97645d9f.jpg",
-                                                        "thumbnail": "\/e\/r\/er144_6104d97645d9f.jpg",
-                                                        "msrp_display_actual_price_type": "0",
-                                                        "url_key": "stunring-handmade-3-ct-round-cut-engagement-ring-er144",
-                                                        "gift_message_available": "0",
-                                                        "status": "1",
-                                                        "visibility": "4",
-                                                        "tax_class_id": "2",
-                                                        "special_from_date": "2021-07-31 00:00:00",
-                                                        "store_id": 1,
-                                                        "options": [{}, {}],
-                                                        "request_path": "stunring-handmade-3-ct-round-cut-engagement-ring-er144.html",
-                                                        "extension_attributes": {},
-                                                        "customer_group_id": "0",
-                                                        "final_price": null
-                                                    },
-                                                    "tax_class_id": "2",
-                                                    "has_error": false,
-                                                    "stock_state_result": {},
-                                                    "converted_price": 115.95,
-                                                    "calculation_price": 115.95,
-                                                    "product_option": {},
-                                                    "options": [{
-                                                        "value": "7.5(U.S)",
-                                                        "label": "Ring Size"
-                                                    }],
-                                                    "thumbnail": "https:\/\/cdn.stunring.com\/media\/catalog\/product\/cache\/2b75b189b0c4c57abd5635c6b7724370\/e\/r\/er144_6104d97645d9f.jpg",
-                                                    "message": ""
-                                                }, {
-                                                    "item_id": "96148",
-                                                    "quote_id": "52696",
-                                                    "created_at": "2023-06-26 06:07:21",
-                                                    "updated_at": "2023-06-26 06:07:21",
-                                                    "product_id": "1687",
-                                                    "store_id": 1,
-                                                    "parent_item_id": null,
-                                                    "is_virtual": "0",
-                                                    "sku": "ER144",
-                                                    "name": "STUNRING Handmade 3 CT Round Cut Engagement Ring",
-                                                    "description": null,
-                                                    "applied_rule_ids": null,
-                                                    "additional_data": null,
-                                                    "is_qty_decimal": false,
-                                                    "no_discount": "0",
-                                                    "weight": null,
-                                                    "qty": 1,
-                                                    "price": "145.9500",
-                                                    "base_price": "145.9500",
-                                                    "custom_price": null,
-                                                    "discount_percent": "0.0000",
-                                                    "discount_amount": "0.0000",
-                                                    "base_discount_amount": "0.0000",
-                                                    "tax_percent": "0.0000",
-                                                    "tax_amount": "0.0000",
-                                                    "base_tax_amount": "0.0000",
-                                                    "row_total": "145.9500",
-                                                    "base_row_total": "145.9500",
-                                                    "row_total_with_discount": "0.0000",
-                                                    "row_weight": "0.0000",
-                                                    "product_type": "simple",
-                                                    "base_tax_before_discount": null,
-                                                    "tax_before_discount": null,
-                                                    "original_custom_price": null,
-                                                    "redirect_url": null,
-                                                    "base_cost": null,
-                                                    "price_incl_tax": "145.9500",
-                                                    "base_price_incl_tax": "145.9500",
-                                                    "row_total_incl_tax": "145.9500",
-                                                    "base_row_total_incl_tax": "145.9500",
-                                                    "discount_tax_compensation_amount": "0.0000",
-                                                    "base_discount_tax_compensation_amount": "0.0000",
-                                                    "gift_message_id": null,
-                                                    "free_shipping": "0",
-                                                    "qty_options": [],
-                                                    "product": {
-                                                        "entity_id": "1687",
-                                                        "attribute_set_id": "4",
-                                                        "type_id": "simple",
-                                                        "sku": "ER144",
-                                                        "has_options": "1",
-                                                        "required_options": "1",
-                                                        "created_at": "2021-07-31 05:02:47",
-                                                        "updated_at": "2023-02-23 03:00:10",
-                                                        "price": "242.780000",
-                                                        "special_price": "144.940000",
-                                                        "name": "STUNRING Handmade 3 CT Round Cut Engagement Ring",
-                                                        "small_image": "\/e\/r\/er144_6104d97645d9f.jpg",
-                                                        "thumbnail": "\/e\/r\/er144_6104d97645d9f.jpg",
-                                                        "msrp_display_actual_price_type": "0",
-                                                        "url_key": "stunring-handmade-3-ct-round-cut-engagement-ring-er144",
-                                                        "gift_message_available": "0",
-                                                        "status": "1",
-                                                        "visibility": "4",
-                                                        "tax_class_id": "2",
-                                                        "special_from_date": "2021-07-31 00:00:00",
-                                                        "store_id": 1,
-                                                        "options": [{}, {}],
-                                                        "request_path": "stunring-handmade-3-ct-round-cut-engagement-ring-er144.html",
-                                                        "extension_attributes": {},
-                                                        "customer_group_id": "0",
-                                                        "final_price": null
-                                                    },
-                                                    "tax_class_id": "2",
-                                                    "has_error": false,
-                                                    "stock_state_result": {},
-                                                    "converted_price": 145.95,
-                                                    "calculation_price": 145.95,
-                                                    "product_option": {},
-                                                    "options": [{
-                                                        "value": "11.5(U.S)",
-                                                        "label": "Ring Size"
-                                                    }, {
-                                                        "value": "zxc",
-                                                        "label": "Engravings"
-                                                    }],
-                                                    "thumbnail": "https:\/\/cdn.stunring.com\/media\/catalog\/product\/cache\/2b75b189b0c4c57abd5635c6b7724370\/e\/r\/er144_6104d97645d9f.jpg",
-                                                    "message": ""
-                                                }],
                                                 "quoteMessages": {
                                                     "96147": "",
                                                     "96148": ""
@@ -2461,7 +2141,7 @@ class="minutes">{{ mm }}</span>:<span
                                                 "autocomplete": "off",
                                                 "displayBillingOnPaymentMethod": true,
                                                 "maxCartItemsToDisplay": 10,
-                                                "cartUrl": "https:\/\/www.stunring.com\/checkout\/cart\/",
+                                            "cartUrl": "{!! route('cart.show') !!}",
                                                 "captcha": {
                                                     "payment_processing_request": {
                                                         "isCaseSensitive": false,

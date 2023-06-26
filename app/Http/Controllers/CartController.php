@@ -20,7 +20,7 @@ class CartController extends Controller
         // dd($this->cart->cartList());
         return view('pc.cart', [
             'cartList' => $this->cart->cartList(),
-            'orderSummary' => $this->cart->getCartDataWithSummary()
+            'orderSummary' => $this->cart->getCartDataWithSummary(),
         ]);
     }
 
@@ -62,5 +62,21 @@ class CartController extends Controller
 
         // 返回到上一个页面
         return back();
+    }
+
+    /**
+     * 更新购物车中商品的数量。
+     *
+     * @return array 包含成功信息的关联数组
+     */
+    public function updateItemQty(): array
+    {
+        // 从请求中获取购物车商品信息
+        $cartItems = request()->input('cart');
+
+        // 调用购物车对象的方法来批量调整商品数量
+        $this->cart->adjustItemQuantities($cartItems);
+
+        return ['success' => true]; // 返回成功信息
     }
 }
