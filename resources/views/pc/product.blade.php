@@ -120,54 +120,6 @@
         })(window, document, 'script', 'dataLayer', 'GTM-W9KLL33');
     </script>
     <!-- End Google Tag Manager -->
-    <script>
-        require([
-            'jquery'
-        ], function($) {
-
-            function trackAddToCart(content_ids, content_name, content_category, value, eventId) {
-                fbq('set', 'agent', 'magento2-2.3.7-1.2.5', '2916720578609452');
-                fbq('track', 'AddToCart', {
-                    source: "magento2",
-                    version: "2.3.7",
-                    pluginVersion: "1.2.5",
-                    content_type: "product",
-                    currency: "USD",
-                    content_ids: content_ids,
-                    content_name: content_name,
-                    content_category: content_category,
-                    value: value
-                }, {
-                    eventID: eventId
-                });
-            }
-
-            var product_info_url = 'https://www.stunring.com/fbe/Pixel/ProductInfoForAddToCart';
-
-            $(document).on('ajax:addToCart', function(event, data) {
-                var product_sku = data.sku;
-                var form_key = jQuery("[name='form_key']").val();
-                $.ajax({
-                    url: product_info_url,
-                    data: {
-                        product_sku: product_sku,
-                        form_key: form_key
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success: function(res) {
-                        trackAddToCart(
-                            [res.id],
-                            res.name,
-                            res.content_category,
-                            res.value,
-                            res.event_id
-                        );
-                    }
-                });
-            });
-        });
-    </script>
 
     <img src="/static/version1681280332/frontend/Swetelove/desktop/en_US/images/loader-2.gif" rel="prefetch"
         class="hidden">
@@ -600,10 +552,10 @@
                                             $i = 0;
                                         @endphp
                                         @foreach ($attributes as $index => $attribute)
-                                        @php
-                                            $i++
-                                        @endphp
-                                        <script type="text/x-magento-init">
+                                            @php
+                                                $i++;
+                                            @endphp
+                                            <script type="text/x-magento-init">
                                             {
                                                 "#product_addtocart_form": {
                                                     "priceOptions": {
@@ -658,29 +610,31 @@
                                                 }
                                             }
                                         </script>
-                                        <div class="field required relative">
-                                            <label class="label" for="select_{{$index}}">
-                                                <span>{{$index}}</span>
-                                            </label>
-                                            <div class="control">
-                                                <select name="options[{{$index}}]" id="select_{{$index}}"
-                                                    class=" required product-custom-option admin__control-select  w-full h-9 border border-gray-300 outline-none p-2 text-sm"
-                                                    title="" data-selector="options[{{$index}}]">
-                                                    <option value="">-- Please Select --</option>
-                                                    @foreach ($attribute as $item)
-                                                        <option value="{{ $item['value_id'] }}"
-                                                            price="{{ $item['price_adjustment'] }}">
-                                                            {{ $item['value'] }} + ${{ number_format($item['price_adjustment'], 2) }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                            <div class="field required relative">
+                                                <label class="label" for="select_{{ $index }}">
+                                                    <span>{{ $index }}</span>
+                                                </label>
+                                                <div class="control">
+                                                    <select name="options[{{ $index }}]"
+                                                        id="select_{{ $index }}"
+                                                        class=" required product-custom-option admin__control-select  w-full h-9 border border-gray-300 outline-none p-2 text-sm"
+                                                        title="" data-selector="options[{{ $index }}]">
+                                                        <option value="">-- Please Select --</option>
+                                                        @foreach ($attribute as $item)
+                                                            <option value="{{ $item['value_id'] }}"
+                                                                price="{{ $item['price_adjustment'] }}">
+                                                                {{ $item['value'] }} +
+                                                                ${{ number_format($item['price_adjustment'], 2) }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                @if ($index == 'Size')
+                                                    <div id="size-guide" on="tap:product-pop-size-guide.open"
+                                                        class="size-guide absolute top-1 right-3 md:top-2/3 md:right-16 text-sm underline text-gray-700 cursor-pointer">
+                                                        Size Guide </div>
+                                                @endif
                                             </div>
-                                            @if ($index == 'Size')
-                                                <div id="size-guide" on="tap:product-pop-size-guide.open"
-                                                class="size-guide absolute top-1 right-3 md:top-2/3 md:right-16 text-sm underline text-gray-700 cursor-pointer">
-                                                Size Guide </div>
-                                            @endif
-                                        </div>
                                         @endforeach
                                         <div class="field">
                                             <label class="label" for="options_characters_text">
@@ -696,8 +650,8 @@
                                                 <input type="text" id="options_characters_text"
                                                     class="input-text product-custom-option w-full h-9 border border-gray-300 outline-none p-2 text-sm"
                                                     data-validate="&#x7B;&quot;maxlength&quot;&#x3A;&quot;16&quot;,&quot;validate-no-utf8mb4-characters&quot;&#x3A;true&#x7D;"
-                                                    name="options[characters]" data-selector="options[characters]" value=""
-                                                    maxlength="16" />
+                                                    name="options[characters]" data-selector="options[characters]"
+                                                    value="" maxlength="16" />
                                                 <p class="note note_characters">
                                                     Maximum 16 characters <span
                                                         class="character-counter no-display"></span>
@@ -746,6 +700,17 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <script>
+                                        require(['jquery'], function($) {
+                                            $(document).ready(function() {
+                                                $(document).ajaxComplete(function(event, xhr, settings) {
+                                                    if (settings.url === '{{ url("add_to_cart") }}') {
+                                                        window.updateMiniCart();
+                                                    }
+                                                });
+                                            });
+                                        })
+                                    </script>
                                     <script type="text/x-magento-init">
                                         {
                                             "#product_addtocart_form": {
@@ -3454,7 +3419,7 @@
                     <button
                         class="action checkout w-full text-center text-white bg-amber cursor-pointer font-semibold p-3"
                         id="pop_view_cart" type="button" data-role="closeBtn"
-                        onclick="jQuery('body').trigger('processStart');window.location.href='{{route('cart.show')}}';"><i
+                        onclick="jQuery('body').trigger('processStart');window.location.href='{{ route('cart.show') }}';"><i
                             class="fa fa-lock mr-3"></i>View Cart & Checkout</button>
                 </div>
             </div>

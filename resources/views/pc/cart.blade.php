@@ -709,9 +709,11 @@ class="minutes">{{ mm }}</span>:<span
                                                                 </span>
                                                                 <dl class="item-options">
                                                                     @foreach ($item['options'] as $option => $value)
+                                                                        @if ($value)
                                                                         <dt class="italic text-xs font-semibold">
                                                                             {{ $option }}</dt>
                                                                         <dd class="text-xs">{{ $value }}</dd>
+                                                                        @endif
                                                                     @endforeach
                                                                 </dl>
                                                                 <div class="actions-toolbar text-xs">
@@ -764,7 +766,6 @@ class="minutes">{{ mm }}</span>:<span
                                                                 </div>
                                                             </div>
                                                         </td>
-
                                                         <td class="col subtotal" data-th="Subtotal">
                                                             <span class="price-excluding-tax"
                                                                 data-label="Excl.&#x20;Tax">

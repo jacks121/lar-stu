@@ -29,8 +29,10 @@ Route::get('product/{product_id}.html', [ProductController::class, 'index'])
 Route::post('add_to_cart', [CartController::class, 'addToCart']);
 
 Route::get('checkout/cart', [CartController::class, 'show'])->name('cart.show');
-Route::post('checkout/cart/delete', [CartController::class, 'delete'])->name('cart.delete');
+Route::any('checkout/cart/delete', [CartController::class, 'delete'])->name('cart.delete');
+
 Route::post('checkout/cart/updateItemQty', [CartController::class, 'updateItemQty'])->name('cart.updateItemQty');
+Route::get('checkout/cart/update', [CartController::class, 'getCartData'])->name('cart.update');
 
 Route::any('{any}', [CategoryController::class, 'index'])->where('any', '.*');
 

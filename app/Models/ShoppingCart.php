@@ -30,9 +30,11 @@ class ShoppingCart
     {
         $cartData = $this->getCartData();
         $subtotal = 0;
+        $count = 0;
 
         foreach ($cartData as $cartItem) {
             $subtotal += $cartItem['subtotal'] ?? 0;
+            $count += $cartItem['qty'] ?? 0;
         }
 
         $tax = $subtotal * self::TAX_RATE;
@@ -43,6 +45,7 @@ class ShoppingCart
             'subtotal' => $subtotal, // 小计金额
             'tax' => $tax, // 税费金额
             'total' => $total, // 订单总额
+            'count' => $count,
         ];
     }
 

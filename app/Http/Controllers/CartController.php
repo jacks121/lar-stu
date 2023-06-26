@@ -26,7 +26,7 @@ class CartController extends Controller
     {
         $params = request()->all();
         $this->cart->addToCart($params);
-
+        
         $jsonString = '{
             "status": true,
             "name": "Stunring Art Deco 9ct Round Cut Engagement Ring",
@@ -76,5 +76,26 @@ class CartController extends Controller
         $this->cart->adjustItemQuantities($cartItems);
 
         return ['success' => true]; // 返回成功信息
+    }
+
+    public function getCartData(Request $request)
+    {
+        if ($request->ajax()) {
+            // 获取购物车数据
+            $cartDataWithSummary = $this->cart->getCartDataWithSummary();
+
+            // 创建购物车列表的 HTML
+            $cartListHtml = view('pc.cart.mini_cart_items', ['cartDataWithSummary' => $cartDataWithSummary])->render();
+
+            // 返回购物车数据
+            return response()->json([
+                'cartListHtml' => $cartListHtml,
+                'cartCount' => $cartDataWithSummary['count'],
+                'cartSubtotal' => $cartDataWithSummary['subtotal'],
+            ]);
+        }
+
+        // 如果不是 AJAX 请求，返回 404 错误
+        abort(404);
     }
 }

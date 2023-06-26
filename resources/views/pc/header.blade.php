@@ -38,8 +38,7 @@
                     <strong class="label switcher-label"><span>Currency</span></strong>
                     <div class="actions dropdown options switcher-options">
                         <div class="action toggle switcher-trigger" id="switcher-currency-trigger"
-                            data-mage-init='{"dropdown":{}}' data-toggle="dropdown"
-                            data-trigger-keypress-button="true">
+                            data-mage-init='{"dropdown":{}}' data-toggle="dropdown" data-trigger-keypress-button="true">
                             <strong class="currency currency-USD">
                                 <span>USD</span>
                             </strong>
@@ -56,14 +55,14 @@
 
                 </div>
                 <div class="email-content">
-                    <a href="mailto:service@stunring.com" rel="nofollow"><span
-                            class="text-xl fa fa-envelope"></span> service@stunring.com</a>
+                    <a href="mailto:service@stunring.com" rel="nofollow"><span class="text-xl fa fa-envelope"></span>
+                        service@stunring.com</a>
                 </div>
                 <div class="fb-like  pl-2 pt-1">
                     <iframe
                         src="https://www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2FStunring&amp;width=90&amp;layout=button_count&amp;action=like&amp;size=small&amp;share=false&amp;height=21&amp;appId=1836365439867688"
-                        width="90" height="21" style="border:none;overflow:hidden" scrolling="no"
-                        frameborder="0" allowfullscreen="true"
+                        width="90" height="21" style="border:none;overflow:hidden" scrolling="no" frameborder="0"
+                        allowfullscreen="true"
                         allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>
                 </div>
             </div>
@@ -79,16 +78,14 @@
                                 </label>
                                 <div class="control">
                                     <input id="search" type="text" name="q" value=""
-                                        placeholder="Search&#x20;entire&#x20;store&#x20;here..."
-                                        class="input-text" maxlength="128" role="combobox"
-                                        aria-haspopup="false" aria-autocomplete="both" autocomplete="off"
-                                        aria-expanded="false" />
+                                        placeholder="Search&#x20;entire&#x20;store&#x20;here..." class="input-text"
+                                        maxlength="128" role="combobox" aria-haspopup="false" aria-autocomplete="both"
+                                        autocomplete="off" aria-expanded="false" />
                                     <div id="search_autocomplete" class="search-autocomplete"></div>
                                 </div>
                             </div>
                             <div class="actions">
-                                <button type="submit" title="Search" class="action search"
-                                    aria-label="Search">
+                                <button type="submit" title="Search" class="action search" aria-label="Search">
                                     <span>Search</span>
                                 </button>
                             </div>
@@ -121,103 +118,27 @@
                     </a>
                 </div>
                 <script type="text/x-magento-init">
-{
-"*": {
-    "Magento_Ui/js/core/app": {
-        "components": {
-            "wishlist": {
-                "component": "Magento_Wishlist/js/view/wishlist"
-            }
-        }
-    }
-}
-}
-
-</script>
-
-                <div data-block="minicart" class="minicart-wrapper">
-                    <a class="action showcart" href="https://www.stunring.com/checkout/cart/"
-                        data-bind="scope: 'minicart_content'">
-                        <span class="text">My Cart</span>
-                        <span class="counter qty empty"
-                            data-bind="css: { empty: !!getCartParam('summary_count') == false && !isLoading() }, blockLoader: isLoading">
-                            <span class="counter-number">
-                                <!-- ko text: getCartParam('summary_count') -->
-                                <!-- /ko -->
-                            </span>
-                            <span class="counter-label">
-                                <!-- ko if: getCartParam('summary_count') -->
-                                <!-- ko text: getCartParam('summary_count') -->
-                                <!-- /ko -->
-                                <!-- ko i18n: 'items' -->
-                                <!-- /ko -->
-                                <!-- /ko -->
-                            </span>
-                        </span>
-                    </a>
-                    <div class="block block-minicart" data-role="dropdownDialog"
-                        data-mage-init='{"dropdownDialog":{
-        "appendTo":"[data-block=minicart]",
-        "triggerTarget":".showcart",
-        "timeout": "2000",
-        "closeOnMouseLeave": false,
-        "closeOnEscape": true,
-        "triggerClass":"active",
-        "parentClass":"active",
-        "buttons":[]}}'>
-                        <div id="minicart-content-wrapper" data-bind="scope: 'minicart_content'">
-                            <!-- ko template: getTemplate() -->
-                            <!-- /ko -->
-                        </div>
-                    </div>
-                    <script>
-                        window.checkout = {
-                            "shoppingCartUrl": "https:\/\/www.stunring.com\/checkout\/cart\/",
-                            "checkoutUrl": "https:\/\/www.stunring.com\/checkout\/",
-                            "updateItemQtyUrl": "https:\/\/www.stunring.com\/checkout\/sidebar\/updateItemQty\/",
-                            "removeItemUrl": "https:\/\/www.stunring.com\/checkout\/sidebar\/removeItem\/",
-                            "imageTemplate": "Magento_Catalog\/product\/image_with_borders",
-                            "baseUrl": "https:\/\/www.stunring.com\/",
-                            "minicartMaxItemsVisible": 5,
-                            "websiteId": "1",
-                            "maxItemsToDisplay": 10,
-                            "storeId": "1",
-                            "storeGroupId": "1",
-                            "customerLoginUrl": "https:\/\/www.stunring.com\/customer\/account\/login\/referer\/aHR0cHM6Ly93d3cuc3R1bnJpbmcuY29tLw%2C%2C\/",
-                            "isRedirectRequired": false,
-                            "autocomplete": "off",
-                            "captcha": {
-                                "user_login": {
-                                    "isCaseSensitive": false,
-                                    "imageHeight": 50,
-                                    "imageSrc": "",
-                                    "refreshUrl": "https:\/\/www.stunring.com\/captcha\/refresh\/",
-                                    "isRequired": false,
-                                    "timestamp": 1684986901
-                                }
+                {
+                "*": {
+                    "Magento_Ui/js/core/app": {
+                        "components": {
+                            "wishlist": {
+                                "component": "Magento_Wishlist/js/view/wishlist"
                             }
-                        };
-                    </script>
-                    <script type="text/x-magento-init">
-{
-"[data-block='minicart']": {
-    "Magento_Ui/js/core/app": {"components":{"minicart_content":{"children":{"subtotal.container":{"children":{"subtotal":{"children":{"subtotal.totals":{"config":{"display_cart_subtotal_incl_tax":0,"display_cart_subtotal_excl_tax":1,"template":"Magento_Tax\/checkout\/minicart\/subtotal\/totals"},"children":{"subtotal.totals.msrp":{"component":"Magento_Msrp\/js\/view\/checkout\/minicart\/subtotal\/totals","config":{"displayArea":"minicart-subtotal-hidden","template":"Magento_Msrp\/checkout\/minicart\/subtotal\/totals"}}},"component":"Magento_Tax\/js\/view\/checkout\/minicart\/subtotal\/totals"}},"component":"uiComponent","config":{"template":"Magento_Checkout\/minicart\/subtotal"}}},"component":"uiComponent","config":{"displayArea":"subtotalContainer"}},"item.renderer":{"component":"uiComponent","config":{"displayArea":"defaultRenderer","template":"Magento_Checkout\/minicart\/item\/default"},"children":{"item.image":{"component":"Magento_Catalog\/js\/view\/image","config":{"template":"Magento_Catalog\/product\/image","displayArea":"itemImage"}},"checkout.cart.item.price.sidebar":{"component":"uiComponent","config":{"template":"Magento_Checkout\/minicart\/item\/price","displayArea":"priceSidebar"}}}},"extra_info":{"component":"uiComponent","config":{"displayArea":"extraInfo"}},"promotion":{"component":"uiComponent","config":{"displayArea":"promotion"}}},"config":{"itemRenderer":{"default":"defaultRenderer","simple":"defaultRenderer","virtual":"defaultRenderer"},"template":"Magento_Checkout\/minicart\/content"},"component":"Magento_Checkout\/js\/view\/minicart"}},"types":[]}        },
-"*": {
-    "Magento_Ui/js/block-loader": "https\u003A\u002F\u002Fwww.stunring.com\u002Fstatic\u002Fversion1681280332\u002Ffrontend\u002FSwetelove\u002Fdesktop\u002Fen_US\u002Fimages\u002Floader\u002D1.gif"
-}
-}
-</script>
-                </div>
-
-
+                        }
+                    }
+                }
+                }
+                </script>
+                <x-mini-cart />
             </div>
         </div>
     </div>
     <div class="header content flex justify-center items-center"><span data-action="toggle-nav"
             class="action nav-toggle"><span>Toggle Nav</span></span>
         <a class="logo" href="index.html" title="" aria-label="store logo">
-            <img src="/static/version1681280332/frontend/Swetelove/desktop/en_US/images/logo.png"
-                title="" alt="" />
+            <img src="/static/version1681280332/frontend/Swetelove/desktop/en_US/images/logo.png" title=""
+                alt="" />
         </a>
         <div class="sections nav-sections">
             <div class="section-items nav-sections-items" data-mage-init='{"tabs":{"openedState":"active"}}'>
@@ -225,8 +146,7 @@
                     <a class="nav-sections-item-switch" data-toggle="switch" href="#store.menu">
                         Menu </a>
                 </div>
-                <div class="section-item-content nav-sections-item-content" id="store.menu"
-                    data-role="content">
+                <div class="section-item-content nav-sections-item-content" id="store.menu" data-role="content">
 
                     <nav class="navigation" data-action="navigation">
                         <ul
@@ -235,8 +155,8 @@
                                     href="https://www.stunring.com/early-black-friday-sale.html"
                                     class="level-top"><span>Wedding Season Sale</span></a></li>
                             <li class="level0 nav-2 category-item level-top"><a
-                                    href="https://www.stunring.com/top-sellers.html"
-                                    class="level-top"><span>Top Sellers</span></a></li>
+                                    href="https://www.stunring.com/top-sellers.html" class="level-top"><span>Top
+                                        Sellers</span></a></li>
                             <li class="level0 nav-3 category-item level-top"><a
                                     href="https://www.stunring.com/what-s-new.html"
                                     class="level-top"><span>What&#039;s New</span></a></li>
@@ -266,8 +186,7 @@
                     <a class="nav-sections-item-switch" data-toggle="switch" href="#store.links">
                         Account </a>
                 </div>
-                <div class="section-item-content nav-sections-item-content" id="store.links"
-                    data-role="content">
+                <div class="section-item-content nav-sections-item-content" id="store.links" data-role="content">
                     <!-- Account links -->
                 </div>
             </div>
