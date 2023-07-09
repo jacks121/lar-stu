@@ -11,10 +11,12 @@ use Illuminate\Support\Facades\Cache;
 
 class Product extends Model
 {
+
     protected $guarded = [];
 
     protected $casts = [
         'detail' => 'json',
+        'product_images' => 'json'
     ];
 
     public function extension(): HasOne
@@ -88,7 +90,7 @@ class Product extends Model
         $query = [
             'from' => $from,
             'size' => $perPage,
-            '_source' => ['id', 'product_name', 'original_price', 'current_price', 'reviews_count', 'rating_avg', 'images', 'extension'],
+            '_source' => ['id', 'product_name', 'product_images','original_price', 'current_price', 'reviews_count', 'rating_avg', 'images', 'extension'],
             'query' => [
                 'bool' => [
                     'must' => [
@@ -309,7 +311,7 @@ class Product extends Model
    
         // 如果索引已经存在，删除索引
         if ($indexExists) {
-            $elasticsearch->indices()->delete($indexParams);
+            // $elasticsearch->indices()->delete($indexParams);
         }
 
         // 获取所有商品及其相关的属性
@@ -353,11 +355,16 @@ class Product extends Model
             //处理productAttributes，合并attribute和value
             if (array_key_exists('product_attributes', $document) && is_array($document['product_attributes'])) {
                 foreach ($document['product_attributes'] as &$attr) {
-                    $attr['attribute'] = $attr['attribute']['attribute_name'];
-                    $attr['value'] = $attr['value']['value'];
+                    try {
+                        $attr['attribute'] = $attr['attribute']['attribute_name'];
+                        $attr['value'] = $attr['value']['value'];
+                    } catch (\Exception $e) {
+                        continue;  // 由于后台的原因，有可能出现null的问题。需要在后台解决。
+                    }
                 }
             }
-
+            
+    
             // 将商品文档索引到 Elasticsearch
             $elasticsearch->index([
                 'index' => 'products',
@@ -366,5 +373,38 @@ class Product extends Model
                 'body' => $document,
             ]);
         }
+    }
+
+    public function search($query, $page = 1, $size = 24, $sort = [])
+    {
+        $from = ($page - 1) * $size;
+
+        $response = app('elasticsearch')->search([
+            'index' => 'products',
+            'body' => [
+                'from' => $from,
+                'size' => $size,
+                'sort' => $sort,
+                'query' => [
+                    'multi_match' => [
+                        'query' => $query,
+                        'fields' => ['*']
+                    ]
+                ]
+            ]
+        ]);
+
+        $totalHits = $response['hits']['total']['value'];
+        $totalPages = ceil($totalHits / $size);
+        $products = collect($response['hits']['hits'])->map(function ($item) {
+            return $item['_source'];
+        });
+
+        return [
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+            'totalHits' => $totalHits,
+            'products' => $products,
+        ];
     }
 }

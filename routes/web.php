@@ -6,6 +6,7 @@ use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,8 @@ Route::get('review/gallery', [AjaxController::class, 'reviewGallery'])->name('re
 
 Route::get('product/{product_id}.html', [ProductController::class, 'index'])
     ->where('product_id', '[a-z0-9]+'); // 产品ID，只包含小写字母和数字
+
+Route::get('search', [SearchController::class, 'index'])->name('product.search');
 
 Route::post('add_to_cart', [CartController::class, 'addToCart']);
 
