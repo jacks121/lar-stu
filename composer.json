@@ -12,8 +12,10 @@
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
+        "laravel/scout": "^10.2",
         "laravel/tinker": "^2.8",
-        "predis/predis": "^2.2"
+        "predis/predis": "^2.2",
+        "psr/http-client": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

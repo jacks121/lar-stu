@@ -71,7 +71,7 @@
                     <div class="block block-title"><strong>Search</strong></div>
                     <div class="block block-content">
                         <form class="form minisearch" id="search_mini_form"
-                            action="https://www.stunring.com/catalogsearch/result/" method="get">
+                            action="{{ route('product.search', ['keyword' => 'product']) }}" method="get">
                             <div class="field search">
                                 <label class="label" for="search" data-role="minisearch-label">
                                     <span>Search</span>
@@ -136,7 +136,7 @@
     </div>
     <div class="header content flex justify-center items-center"><span data-action="toggle-nav"
             class="action nav-toggle"><span>Toggle Nav</span></span>
-        <a class="logo" href="index.html" title="" aria-label="store logo">
+        <a class="logo" href="{{url('/')}}" title="" aria-label="store logo">
             <img src="/static/version1681280332/frontend/Swetelove/desktop/en_US/images/logo.png" title=""
                 alt="" />
         </a>

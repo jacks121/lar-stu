@@ -427,7 +427,6 @@
                                     sortOrder="desc">Newest</a>
                             </div>
                         </div>
-
                         <div class="pages-limiter-container flex justify-between items-center">
                             <div class="field limiter">
                                 <label class="label" for="limiter">
@@ -453,8 +452,6 @@
                                 </div>
                                 <span class="limiter-text">per page</span>
                             </div>
-
-
                             <div class="pages">
                                 <strong class="label pages-label" id="paging-label">Page</strong>
                                 <ul class="items pages-items" aria-labelledby="paging-label">
@@ -479,7 +476,6 @@
                                             </a>
                                         </li>
                                     @endif
-
                                     @for ($i = $startPage; $i <= $endPage; $i++)
                                         @php
                                             $queryParams['page'] = $i;
@@ -501,7 +497,6 @@
                                             </li>
                                         @endif
                                     @endfor
-
                                     @if ($currentPage < $totalPages)
                                         @php
                                             $queryParams['page'] = $currentPage + 1;
@@ -516,12 +511,7 @@
                                     @endif
                                 </ul>
                             </div>
-
-
-
                         </div>
-
-
                     </div>
                     <div class="products wrapper mt-5 mb-10 grid products-grid">
                         <ol class="products list items product-items grid grid-cols-2 md:grid-cols-4 gap-3 ">
@@ -529,7 +519,7 @@
                                 <li class="item product product-item relative">
                                     <div class="product-item-info" data-container="product-grid">
                                         @php
-                                            $description = implode('-',$product['extension']);
+                                            $description = implode('-', $product['extension']);
                                         @endphp
                                         <a href="{{ url()->to('/') . '/product/' . $product['id'] }}.html"
                                             class="product photo product-item-photo" tabindex="-1">
@@ -865,42 +855,44 @@
                                         class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
                                         Price
                                     </div>
-
+                                    @if ($filterList)
                                     <div data-role="content" class="filter-options-content py-2">
                                         <ol class="items">
-                                            @foreach ($filterList['price'] as $index => $item)
-                                                @php
-                                                    $nextItem = current(array_slice($filterList['price'], $index + 1, 1));
-                                                    if(count($filterList['price']) < 2){
-                                                        break;
-                                                    }
-                                                    $urlParams = array_merge(request()->query(), ['price' => $item['key'] . ($nextItem ? '-' . $nextItem['key'] : '-999999')]);
-                                                    $url = request()->path() . '?' . http_build_query($urlParams);
-                                                    $isChecked = request()->input('price') == $item['key'] . ($nextItem ? '-' . $nextItem['key'] : '-999999');
-                                                @endphp
-                                                <li class="item py-1">
-                                                    <input type="radio"
-                                                        onchange="window.location.href='{{ $url }}'"
-                                                        {{ $isChecked ? 'checked="checked"' : '' }} />
-                                                    <a href="{{ $url }}">
-                                                        @if ($index == 0)
-                                                            <span class="price">Below ${{ $nextItem['key'] }}</span>
-                                                        @elseif ($index == count($filterList['price']) - 1)
-                                                            <span class="price">${{ $item['key'] }} and above</span>
-                                                        @else
-                                                            <span
-                                                                class="price">{{ $filterList['price'][$index - 1]['key'] }}</span>
-                                                            -
-                                                            <span class="price">${{ $item['key'] }}</span>
-                                                        @endif
-                                                        <span class="count">{{ $item['doc_count'] }}
-                                                            <span class="filter-count-label">
-                                                                {{ $item['doc_count'] > 1 ? 'items' : 'item' }}
+                                                @foreach ($filterList['price'] as $index => $item)
+                                                    @php
+                                                        $nextItem = current(array_slice($filterList['price'], $index + 1, 1));
+                                                        if (count($filterList['price']) < 2) {
+                                                            break;
+                                                        }
+                                                        $urlParams = array_merge(request()->query(), ['price' => $item['key'] . ($nextItem ? '-' . $nextItem['key'] : '-999999')]);
+                                                        $url = request()->path() . '?' . http_build_query($urlParams);
+                                                        $isChecked = request()->input('price') == $item['key'] . ($nextItem ? '-' . $nextItem['key'] : '-999999');
+                                                    @endphp
+                                                    <li class="item py-1">
+                                                        <input type="radio"
+                                                            onchange="window.location.href='{{ $url }}'"
+                                                            {{ $isChecked ? 'checked="checked"' : '' }} />
+                                                        <a href="{{ $url }}">
+                                                            @if ($index == 0)
+                                                                <span class="price">Below
+                                                                    ${{ $nextItem['key'] }}</span>
+                                                            @elseif ($index == count($filterList['price']) - 1)
+                                                                <span class="price">${{ $item['key'] }} and
+                                                                    above</span>
+                                                            @else
+                                                                <span
+                                                                    class="price">{{ $filterList['price'][$index - 1]['key'] }}</span>
+                                                                -
+                                                                <span class="price">${{ $item['key'] }}</span>
+                                                            @endif
+                                                            <span class="count">{{ $item['doc_count'] }}
+                                                                <span class="filter-count-label">
+                                                                    {{ $item['doc_count'] > 1 ? 'items' : 'item' }}
+                                                                </span>
                                                             </span>
-                                                        </span>
-                                                    </a>
-                                                </li>
-                                            @endforeach
+                                                        </a>
+                                                    </li>
+                                                @endforeach
                                         </ol>
                                     </div>
                                 </div>
@@ -957,7 +949,9 @@
                                         </div>
                                     </div>
                                 @endforeach
-                                <div data-role="collapsible" class="filter-options-item @if (!empty($existingKeys)) expanded @else collapsed @endif" attribute="carat ranges">
+                                <div data-role="collapsible"
+                                    class="filter-options-item @if (!empty($existingKeys)) expanded @else collapsed @endif"
+                                    attribute="carat ranges">
                                     <div data-role="title"
                                         class="filter-options-title text-gray-600 py-3 border-b border-gray-200 uppercase relative cursor-pointer">
                                         Carat Ranges
@@ -966,7 +960,7 @@
                                         <ol class="items">
                                             @foreach ($filterList['carat ranges'] as $index => $item)
                                                 @php
-                                                    if(count($filterList['carat ranges']) < 2){
+                                                    if (count($filterList['carat ranges']) < 2) {
                                                         break;
                                                     }
                                                     $nextItem = current(array_slice($filterList['carat ranges'], $index + 1, 1));
@@ -1014,6 +1008,7 @@
                                         </ol>
                                     </div>
                                 </div>
+                                @endif
 
                             </div>
 
