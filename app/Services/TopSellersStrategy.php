@@ -7,16 +7,16 @@ use App\Models\Product;
 class TopSellersStrategy
 {
     protected $product;
-    protected $limit;
+    protected $rule;
 
-    public function __construct(Product $product, int $limit)
+    public function __construct(Product $product, array $rule)
     {
         $this->product = $product;
-        $this->limit = $limit;
+        $this->rule = $rule;
     }
 
     public function getProducts()
     {
-        return $this->product->getTopSellers($this->limit);
+        return $this->product->getTopSellers($this->rule[0]['value']);
     }
 }
