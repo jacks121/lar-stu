@@ -7,7 +7,6 @@
 
 <head>
     <script>
-        var BASE_URL = 'https://www.stunring.com/';
         var require = {
             "baseUrl": "/static/version1681280332/frontend/Swetelove/desktop/en_US"
         };
@@ -101,55 +100,6 @@
                 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
             f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-W9KLL33');
-    </script>
-    <!-- End Google Tag Manager -->
-    <script>
-        require([
-            'jquery'
-        ], function($) {
-
-            function trackAddToCart(content_ids, content_name, content_category, value, eventId) {
-                fbq('set', 'agent', 'magento2-2.3.7-1.2.5', '2916720578609452');
-                fbq('track', 'AddToCart', {
-                    source: "magento2",
-                    version: "2.3.7",
-                    pluginVersion: "1.2.5",
-                    content_type: "product",
-                    currency: "USD",
-                    content_ids: content_ids,
-                    content_name: content_name,
-                    content_category: content_category,
-                    value: value
-                }, {
-                    eventID: eventId
-                });
-            }
-
-            var product_info_url = 'https://www.stunring.com/fbe/Pixel/ProductInfoForAddToCart';
-
-            $(document).on('ajax:addToCart', function(event, data) {
-                var product_sku = data.sku;
-                var form_key = jQuery("[name='form_key']").val();
-                $.ajax({
-                    url: product_info_url,
-                    data: {
-                        product_sku: product_sku,
-                        form_key: form_key
-                    },
-                    type: 'post',
-                    dataType: 'json',
-                    success: function(res) {
-                        trackAddToCart(
-                            [res.id],
-                            res.name,
-                            res.content_category,
-                            res.value,
-                            res.event_id
-                        );
-                    }
-                });
-            });
-        });
     </script>
 
     <img src="../static/version1681280332/frontend/Swetelove/desktop/en_US/images/loader-2.gif" rel="prefetch"
@@ -313,20 +263,6 @@
     data-mage-init='{"loaderAjax": {}, "loader": { "icon": "/static/version1681280332/frontend/Swetelove/desktop/en_US/images/loader-2.gif"}}'
     class="page-with-filter page-products categorypath-wedding-engagement-rings category-engagement-rings catalog-category-view page-layout-2columns-left">
 
-
-    <script type="text/x-magento-init">
-    {
-        "*": {
-            "mage/cookies": {
-                "expires": null,
-                "path": "\u002F",
-                "domain": ".www.stunring.com",
-                "secure": false,
-                "lifetime": "2592000"
-            }
-        }
-    }
-</script>
     <noscript>
         <div class="message global noscript">
             <div class="content">
@@ -456,50 +392,7 @@
             <div class="columns">
                 <div class="column main"><input name="form_key" type="hidden" value="NfnsJIDLnP85ActT" />
                     <div id="authenticationPopup" data-bind="scope:'authenticationPopup'" style="display: none;">
-                        <script>
-                            window.authenticationPopup = {
-                                "autocomplete": "off",
-                                "customerRegisterUrl": "https:\/\/www.stunring.com\/customer\/account\/create\/",
-                                "customerForgotPasswordUrl": "https:\/\/www.stunring.com\/customer\/account\/forgotpassword\/",
-                                "baseUrl": "https:\/\/www.stunring.com\/"
-                            };
-                        </script>
-                        <!-- ko template: getTemplate() -->
-                        <!-- /ko -->
-                        <script type="text/x-magento-init">
-        {
-            "#authenticationPopup": {
-                "Magento_Ui/js/core/app": {"components":{"authenticationPopup":{"component":"Magento_Customer\/js\/view\/authentication-popup","children":{"messages":{"component":"Magento_Ui\/js\/view\/messages","displayArea":"messages"},"captcha":{"component":"Magento_Captcha\/js\/view\/checkout\/loginCaptcha","displayArea":"additional-login-form-fields","formId":"user_login","configSource":"checkout"}}}}}            },
-            "*": {
-                "Magento_Ui/js/block-loader": "https\u003A\u002F\u002Fwww.stunring.com\u002Fstatic\u002Fversion1681280332\u002Ffrontend\u002FSwetelove\u002Fdesktop\u002Fen_US\u002Fimages\u002Floader\u002D1.gif"
-            }
-        }
-    </script>
                     </div>
-                    <script type="text/x-magento-init">
-    {
-        "*": {
-            "Magento_Customer/js/section-config": {
-                "sections": {"stores\/store\/switch":["*"],"stores\/store\/switchrequest":["*"],"directory\/currency\/switch":["*"],"*":["messages"],"customer\/account\/logout":["*","recently_viewed_product","recently_compared_product"],"customer\/account\/loginpost":["*"],"customer\/account\/createpost":["*"],"customer\/account\/editpost":["*"],"customer\/ajax\/login":["checkout-data","cart","captcha"],"catalog\/product_compare\/add":["compare-products"],"catalog\/product_compare\/remove":["compare-products"],"catalog\/product_compare\/clear":["compare-products"],"sales\/guest\/reorder":["cart"],"sales\/order\/reorder":["cart"],"checkout\/cart\/add":["cart","directory-data"],"checkout\/cart\/delete":["cart"],"checkout\/cart\/updatepost":["cart"],"checkout\/cart\/updateitemoptions":["cart"],"checkout\/cart\/couponpost":["cart"],"checkout\/cart\/estimatepost":["cart"],"checkout\/cart\/estimateupdatepost":["cart"],"checkout\/onepage\/saveorder":["cart","checkout-data","last-ordered-items"],"checkout\/sidebar\/removeitem":["cart"],"checkout\/sidebar\/updateitemqty":["cart"],"rest\/*\/v1\/carts\/*\/payment-information":["cart","last-ordered-items"],"rest\/*\/v1\/guest-carts\/*\/payment-information":["cart"],"rest\/*\/v1\/guest-carts\/*\/selected-payment-method":["cart","checkout-data"],"rest\/*\/v1\/carts\/*\/selected-payment-method":["cart","checkout-data"],"paypal\/express\/placeorder":["cart","checkout-data"],"paypal\/payflowexpress\/placeorder":["cart","checkout-data"],"paypal\/express\/onauthorization":["cart","checkout-data"],"review\/product\/post":["review"],"wishlist\/index\/add":["wishlist"],"wishlist\/index\/remove":["wishlist"],"wishlist\/index\/updateitemoptions":["wishlist"],"wishlist\/index\/update":["wishlist"],"wishlist\/index\/cart":["wishlist","cart"],"wishlist\/index\/fromcart":["wishlist","cart"],"wishlist\/index\/allcart":["wishlist","cart"],"wishlist\/shared\/allcart":["wishlist","cart"],"wishlist\/shared\/cart":["cart"]},
-                "clientSideSections": ["checkout-data","cart-data"],
-                "baseUrls": ["https:\/\/www.stunring.com\/"],
-                "sectionNames": ["messages","customer","compare-products","last-ordered-items","cart","directory-data","captcha","review","wishlist","recently_viewed_product","recently_compared_product","product_data_storage","paypal-billing-agreement"]            }
-        }
-    }
-</script>
-                    <script type="text/x-magento-init">
-    {
-        "*": {
-            "Magento_Customer/js/customer-data": {
-                "sectionLoadUrl": "https\u003A\u002F\u002Fwww.stunring.com\u002Fcustomer\u002Fsection\u002Fload\u002F",
-                "expirableSectionLifetime": 2880,
-                "expirableSectionNames": ["cart"],
-                "cookieLifeTime": "2592000",
-                "updateSessionUrl": "https\u003A\u002F\u002Fwww.stunring.com\u002Fcustomer\u002Faccount\u002FupdateSession\u002F"
-            }
-        }
-    }
-</script>
                     <script type="text/x-magento-init">
     {
         "*": {
@@ -515,12 +408,6 @@
                 }
             }
         }
-    }
-</script>
-                    <script type="text/x-magento-init">
-    {
-        "body": {
-            "pageCache": {"url":"https:\/\/www.stunring.com\/page_cache\/block\/render\/id\/22\/","handles":["default","catalog_category_view","catalog_category_view_type_layered","catalog_category_view_type_layered_without_children","catalog_category_view_id_22"],"originalRequest":{"route":"catalog","controller":"category","action":"view","uri":"\/wedding\/engagement-rings.html"},"versionCookieName":"private_content_version"}        }
     }
 </script>
 
@@ -681,7 +568,7 @@
                                                 </div>
                                                 <div class="reviews-actions">
                                                     <a class="action view"
-                                                        href="https://www.stunring.com/{{ $product['product_name'] }}.html#reviews">{{ $product['reviews_count'] }}&nbsp;<span>Reviews</span></a>
+                                                        href="{{ $product['product_name'] }}.html#reviews">{{ $product['reviews_count'] }}&nbsp;<span>Reviews</span></a>
                                                 </div>
                                             </div>
                                             <div class="price-box price-final_price" data-role="priceBox"
@@ -893,12 +780,6 @@
                             }
                         })
                     </script>
-                    <script type="text/x-magento-init">
-    {
-        "body": {
-            "requireCookie": {"noCookieUrl":"https:\/\/www.stunring.com\/cookie\/index\/noCookies\/","triggers":[".action.tocompare"],"isRedirectCmsPage":true}        }
-    }
-</script>
                 </div>
                 <div class="sidebar sidebar-main">
                     <div class="block filter" id="layered-filter-block">
